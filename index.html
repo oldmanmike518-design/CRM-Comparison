@@ -903,7 +903,7 @@
                 <div class="contact-section">
                     <h3>📧 Available for Focused Strategic Projects</h3>
                     <ul>
-                        <li><strong>Email:</strong> <a href="/cdn-cgi/l/email-protection#f59899949b929087b586829c8399db969a98"><span class="__cf_email__" data-cfemail="224f4e434c4547506251554b544e0c414d4f">[email&#160;protected]</span></a></li>
+                        <li><strong>Email:</strong> <a href="mailto:mlanger@swivl.com">mlanger@swivl.com</a></li>
                         <li><strong>Phone:</strong> <a href="tel:6502973056">650-297-3056</a></li>
                         <li><strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/michael-langer-8358492b5/?skipRedirect=true" target="_blank">Profile</a></li>
                         <li><strong>Calendar:</strong> <a href="https://calendly.com/mikeslanger/8-16-minute-chat" target="_blank">Book time</a></li>
@@ -963,7 +963,7 @@
         <div class="detail-content" id="detailContent"></div>
     </div>
 
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    <script>
         const platformDetails = {
             'apollo': { name: 'Apollo.io', url: 'https://www.apollo.io', cost: '$11,760–14,400 annually', dialer: 'Power Dialer', cadences: 'Email, Phone, LinkedIn', ai: 'GPT-4 Writing', features: ['275M+ B2B contacts', 'Power dialer', 'Email sequences', 'LinkedIn automation', 'Salesforce sync'], limitations: ['Data accuracy ~65%', 'Trustpilot 2.2★', 'No parallel dialer'], bestFor: 'Sales teams with bundled data', userQuotes: ['"Data accuracy ~65%." — Sales manager', '"Feels dated vs Nooks." — G2'] },
             'groove': { name: 'Groove (Clari)', url: 'https://www.groove.co', cost: '$12,000–14,400', dialer: 'Salesforce Native', cadences: 'Email + Phone', ai: 'Basic', features: ['Salesforce native', 'Activity auto-logging', 'Flow dialing'], limitations: ['Basic features', 'No parallel', 'Dependent on SF'], bestFor: 'Salesforce power users', userQuotes: ['"Zero sync lag." — G2 4.1★'] },
@@ -1018,4 +1018,20 @@
         }
 
         document.addEventListener('click', function(event) {
-            const panel = document.getElementById
+            const panel = document.getElementById('detailPanel');
+            const clickedDetailButton = event.target.closest('.detail-btn');
+            const clickedInsidePanel = event.target.closest('#detailPanel');
+
+            if (panel.classList.contains('open') && !clickedInsidePanel && !clickedDetailButton) {
+                closeDetail();
+            }
+        });
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeDetail();
+            }
+        });
+    </script>
+</body>
+</html>
