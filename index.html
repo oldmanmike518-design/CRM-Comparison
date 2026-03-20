@@ -161,17 +161,18 @@
 
         .platform-name {
             font-weight: 600;
-            color: #ffffff;
+            color: #8E47FF;
             cursor: pointer;
             text-decoration: underline;
             text-decoration-color: #8E47FF;
             text-decoration-thickness: 2px;
             text-underline-offset: 4px;
-            transition: color 0.2s ease;
+            transition: all 0.2s ease;
         }
 
         .platform-name:hover {
-            color: #8E47FF;
+            color: #ffd4ff;
+            text-decoration-color: #ffd4ff;
         }
 
         .cost-badge {
@@ -295,6 +296,25 @@
             font-weight: 600;
             border-bottom: 2px solid #8E47FF;
             padding-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .detail-visit-site {
+            font-size: 0.6em;
+            background: #8E47FF;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            text-decoration: none;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+
+        .detail-visit-site:hover {
+            background: #ffd4ff;
+            color: #1a1a2e;
         }
 
         .detail-section {
@@ -416,6 +436,21 @@
             font-size: 0.9em;
         }
 
+        .tool-link {
+            color: #8E47FF;
+            text-decoration: underline;
+            text-decoration-color: #8E47FF;
+            text-decoration-thickness: 1px;
+            text-underline-offset: 3px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tool-link:hover {
+            color: #ffd4ff;
+            text-decoration-color: #ffd4ff;
+        }
+
         @media (max-width: 768px) {
             .detail-panel {
                 width: 100%;
@@ -436,6 +471,16 @@
 
             .tab-btn {
                 width: 100%;
+            }
+
+            .detail-content h2 {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .detail-visit-site {
+                width: 100%;
+                text-align: center;
             }
         }
     </style>
@@ -481,7 +526,7 @@
                     </thead>
                     <tbody>
                         <tr onclick="showDetail('apollo')">
-                            <td><span class="platform-name">Apollo.io</span></td>
+                            <td><a href="https://www.apollo.io" target="_blank" class="platform-name">Apollo.io</a></td>
                             <td><span class="cost-badge cost-premium">$11,760–14,400</span></td>
                             <td><span class="feature-badge native">✓ Native</span></td>
                             <td><span class="feature-badge requires-addon">Power Only</span></td>
@@ -490,7 +535,7 @@
                             <td style="color: #8E47FF; cursor: pointer;">Click</td>
                         </tr>
                         <tr onclick="showDetail('groove')">
-                            <td><span class="platform-name">Groove (by Clari)</span></td>
+                            <td><a href="https://www.groove.co" target="_blank" class="platform-name">Groove (by Clari)</a></td>
                             <td><span class="cost-badge cost-premium">$12,000–14,400</span></td>
                             <td><span class="feature-badge native">✓ Native</span></td>
                             <td><span class="feature-badge requires-addon">Flow Dialing</span></td>
@@ -499,7 +544,7 @@
                             <td style="color: #8E47FF; cursor: pointer;">Click</td>
                         </tr>
                         <tr onclick="showDetail('nooks')">
-                            <td><span class="platform-name">Nooks.ai</span></td>
+                            <td><a href="https://www.nooks.ai" target="_blank" class="platform-name">Nooks.ai</a></td>
                             <td><span class="cost-badge cost-premium">$12,000–20,000</span></td>
                             <td><span class="feature-badge native">✓ Parallel</span></td>
                             <td><span class="feature-badge native">✓ Parallel (Best)</span></td>
@@ -508,7 +553,7 @@
                             <td style="color: #8E47FF; cursor: pointer;">Click</td>
                         </tr>
                         <tr onclick="showDetail('outreach')">
-                            <td><span class="platform-name">Outreach.io</span></td>
+                            <td><a href="https://www.outreach.io" target="_blank" class="platform-name">Outreach.io</a></td>
                             <td><span class="cost-badge cost-premium">$18,000–36,000+</span></td>
                             <td><span class="feature-badge native">✓ Native</span></td>
                             <td><span class="feature-badge native">✓ Parallel</span></td>
@@ -517,7 +562,7 @@
                             <td style="color: #8E47FF; cursor: pointer;">Click</td>
                         </tr>
                         <tr onclick="showDetail('revenue-io')">
-                            <td><span class="platform-name">Revenue.io</span></td>
+                            <td><a href="https://www.revenue.io" target="_blank" class="platform-name">Revenue.io</a></td>
                             <td><span class="cost-badge cost-premium">$12,000–16,800</span></td>
                             <td><span class="feature-badge native">✓ Native (RingDNA)</span></td>
                             <td><span class="feature-badge requires-addon">Parallel Ready</span></td>
@@ -526,7 +571,7 @@
                             <td style="color: #8E47FF; cursor: pointer;">Click</td>
                         </tr>
                         <tr onclick="showDetail('reply-io')">
-                            <td><span class="platform-name">Reply.io</span></td>
+                            <td><a href="https://reply.io" target="_blank" class="platform-name">Reply.io</a></td>
                             <td><span class="cost-badge cost-moderate">$9,600–14,400</span></td>
                             <td><span class="feature-badge requires-addon">Phone Ready</span></td>
                             <td><span class="feature-badge no-dialer">Not Native</span></td>
@@ -535,7 +580,7 @@
                             <td style="color: #8E47FF; cursor: pointer;">Click</td>
                         </tr>
                         <tr onclick="showDetail('outplay')">
-                            <td><span class="platform-name">Outplay</span></td>
+                            <td><a href="https://www.outplay.io" target="_blank" class="platform-name">Outplay</a></td>
                             <td><span class="cost-badge cost-premium">$14,400–16,800</span></td>
                             <td><span class="feature-badge native">✓ Native</span></td>
                             <td><span class="feature-badge native">✓ Parallel</span></td>
@@ -544,7 +589,7 @@
                             <td style="color: #8E47FF; cursor: pointer;">Click</td>
                         </tr>
                         <tr onclick="showDetail('mixmax')">
-                            <td><span class="platform-name">Mixmax</span></td>
+                            <td><a href="https://mixmax.com" target="_blank" class="platform-name">Mixmax</a></td>
                             <td><span class="cost-badge cost-budget">$6,960–21,360</span></td>
                             <td><span class="feature-badge no-dialer">Email Native</span></td>
                             <td><span class="feature-badge no-dialer">No Dialer</span></td>
@@ -553,7 +598,7 @@
                             <td style="color: #8E47FF; cursor: pointer;">Click</td>
                         </tr>
                         <tr onclick="showDetail('salesloft')">
-                            <td><span class="platform-name">Salesloft</span></td>
+                            <td><a href="https://www.salesloft.com" target="_blank" class="platform-name">Salesloft</a></td>
                             <td><span class="cost-badge cost-premium">$15,000–30,000</span></td>
                             <td><span class="feature-badge native">✓ Native</span></td>
                             <td><span class="feature-badge requires-addon">Sequential</span></td>
@@ -566,7 +611,7 @@
             </div>
 
             <div class="info-box">
-                <strong>Key Research Finding:</strong> In March 2026, the market clearly splits into three categories. <strong>Nooks.ai</strong> and <strong>Outreach.io</strong> lead in AI-native architecture (built on GPT-4, not bolted-on). <strong>Apollo.io</strong> offers the most complete bundled solution (270M+ contact database + dialer + sequences + native Salesforce sync). Traditional options like <strong>Salesloft</strong> are losing market share as AI-native competitors commoditize their core features at lower prices.
+                <strong>Key Research Finding:</strong> In March 2026, the market clearly splits into three categories. <strong><a href="https://www.nooks.ai" target="_blank" class="tool-link">Nooks.ai</a></strong> and <strong><a href="https://www.outreach.io" target="_blank" class="tool-link">Outreach.io</a></strong> lead in AI-native architecture (built on GPT-4, not bolted-on). <strong><a href="https://www.apollo.io" target="_blank" class="tool-link">Apollo.io</a></strong> offers the most complete bundled solution (270M+ contact database + dialer + sequences + native Salesforce sync). Traditional options like <strong><a href="https://www.salesloft.com" target="_blank" class="tool-link">Salesloft</a></strong> are losing market share as AI-native competitors commoditize their core features at lower prices.
             </div>
         </div>
 
@@ -593,7 +638,7 @@
                     </thead>
                     <tbody>
                         <tr onclick="showDetail('pipedrive')">
-                            <td><span class="platform-name">Pipedrive</span></td>
+                            <td><a href="https://www.pipedrive.com" target="_blank" class="platform-name">Pipedrive</a></td>
                             <td><span class="cost-badge cost-budget">$6,000–15,600</span></td>
                             <td><span class="feature-badge requires-addon">Via Integration</span></td>
                             <td><span class="feature-badge native">✓ Basic</span></td>
@@ -602,7 +647,7 @@
                             <td style="color: #8E47FF; cursor: pointer;">Click</td>
                         </tr>
                         <tr onclick="showDetail('hubspot')">
-                            <td><span class="platform-name">HubSpot Sales Hub</span></td>
+                            <td><a href="https://www.hubspot.com/products/sales" target="_blank" class="platform-name">HubSpot Sales Hub</a></td>
                             <td><span class="cost-badge cost-premium">$24,000–36,000</span></td>
                             <td><span class="feature-badge requires-addon">Via Paid Add-on</span></td>
                             <td><span class="feature-badge native">✓ Strong</span></td>
@@ -611,7 +656,7 @@
                             <td style="color: #8E47FF; cursor: pointer;">Click</td>
                         </tr>
                         <tr onclick="showDetail('zoho')">
-                            <td><span class="platform-name">Zoho CRM</span></td>
+                            <td><a href="https://www.zoho.com/crm" target="_blank" class="platform-name">Zoho CRM</a></td>
                             <td><span class="cost-badge cost-budget">$2,400–9,600</span></td>
                             <td><span class="feature-badge native">✓ Native</span></td>
                             <td><span class="feature-badge native">✓ Native</span></td>
@@ -620,7 +665,7 @@
                             <td style="color: #8E47FF; cursor: pointer;">Click</td>
                         </tr>
                         <tr onclick="showDetail('freshsales')">
-                            <td><span class="platform-name">Freshsales</span></td>
+                            <td><a href="https://www.freshworks.com/crm/sales" target="_blank" class="platform-name">Freshsales</a></td>
                             <td><span class="cost-badge cost-budget">$4,800–12,000</span></td>
                             <td><span class="feature-badge native">✓ Native</span></td>
                             <td><span class="feature-badge native">✓ Native</span></td>
@@ -629,7 +674,7 @@
                             <td style="color: #8E47FF; cursor: pointer;">Click</td>
                         </tr>
                         <tr onclick="showDetail('close')">
-                            <td><span class="platform-name">Close CRM</span></td>
+                            <td><a href="https://www.close.com" target="_blank" class="platform-name">Close CRM</a></td>
                             <td><span class="cost-badge cost-budget">$6,000–16,560</span></td>
                             <td><span class="feature-badge native">✓ Native (Excellent)</span></td>
                             <td><span class="feature-badge native">✓ Native</span></td>
@@ -638,7 +683,7 @@
                             <td style="color: #8E47FF; cursor: pointer;">Click</td>
                         </tr>
                         <tr onclick="showDetail('oliv')">
-                            <td><span class="platform-name">Oliv.ai</span></td>
+                            <td><a href="https://www.oliv.ai" target="_blank" class="platform-name">Oliv.ai</a></td>
                             <td><span class="cost-badge cost-moderate">$19,000–28,000</span></td>
                             <td><span class="feature-badge requires-addon">Integration Only</span></td>
                             <td><span class="feature-badge native">Via Agents</span></td>
@@ -647,7 +692,7 @@
                             <td style="color: #8E47FF; cursor: pointer;">Click</td>
                         </tr>
                         <tr onclick="showDetail('monday')">
-                            <td><span class="platform-name">monday.com CRM</span></td>
+                            <td><a href="https://monday.com/p/crm" target="_blank" class="platform-name">monday.com CRM</a></td>
                             <td><span class="cost-badge cost-budget">$6,720–13,440</span></td>
                             <td><span class="feature-badge requires-addon">Via Integrations</span></td>
                             <td><span class="feature-badge native">✓ Visual</span></td>
@@ -656,7 +701,7 @@
                             <td style="color: #8E47FF; cursor: pointer;">Click</td>
                         </tr>
                         <tr onclick="showDetail('copper')">
-                            <td><span class="platform-name">Copper CRM</span></td>
+                            <td><a href="https://www.copper.com" target="_blank" class="platform-name">Copper CRM</a></td>
                             <td><span class="cost-badge cost-budget">$6,000–16,560</span></td>
                             <td><span class="feature-badge requires-addon">Gmail Native Only</span></td>
                             <td><span class="feature-badge native">Gmail Sequences</span></td>
@@ -665,7 +710,7 @@
                             <td style="color: #8E47FF; cursor: pointer;">Click</td>
                         </tr>
                         <tr onclick="showDetail('streak')">
-                            <td><span class="platform-name">Streak CRM</span></td>
+                            <td><a href="https://www.streak.com" target="_blank" class="platform-name">Streak CRM</a></td>
                             <td><span class="cost-badge cost-premium">$4,920–13,680</span></td>
                             <td><span class="feature-badge no-dialer">No Dialer</span></td>
                             <td><span class="feature-badge native">Gmail Sequences</span></td>
@@ -678,7 +723,7 @@
             </div>
 
             <div class="info-box">
-                <strong>Complete Market Landscape (Path B):</strong> <strong>Pipedrive</strong> dominates for speed (1–2 week implementation, 80% day-1 adoption). <strong>Zoho CRM</strong> offers lowest total cost. <strong>Close CRM</strong> and <strong>Freshsales</strong> are purpose-built for outbound teams. <strong>Oliv.ai</strong> represents 2026's paradigm shift (30+ AI agents that autonomously execute revenue workflows, replacing manual dashboards). <strong>Copper</strong> and <strong>Streak</strong> are Gmail-only (not suitable if team uses Outlook).
+                <strong>Complete Market Landscape (Path B):</strong> <strong><a href="https://www.pipedrive.com" target="_blank" class="tool-link">Pipedrive</a></strong> dominates for speed (1–2 week implementation, 80% day-1 adoption). <strong><a href="https://www.zoho.com/crm" target="_blank" class="tool-link">Zoho CRM</a></strong> offers lowest total cost. <strong><a href="https://www.close.com" target="_blank" class="tool-link">Close CRM</a></strong> and <strong><a href="https://www.freshworks.com/crm/sales" target="_blank" class="tool-link">Freshsales</a></strong> are purpose-built for outbound teams. <strong><a href="https://www.oliv.ai" target="_blank" class="tool-link">Oliv.ai</a></strong> represents 2026's paradigm shift (30+ AI agents that autonomously execute revenue workflows, replacing manual dashboards). <strong><a href="https://www.copper.com" target="_blank" class="tool-link">Copper</a></strong> and <strong><a href="https://www.streak.com" target="_blank" class="tool-link">Streak</a></strong> are Gmail-only (not suitable if team uses Outlook).
             </div>
         </div>
 
@@ -693,7 +738,7 @@
                     <h4>1. Power Dialing (Sequential Dialing)</h4>
                     <p><strong>How it works:</strong> Agent manually enters numbers into a queue. Dialer dials numbers one by one sequentially. If no answer, moves to next number.</p>
                     <p><strong>Key features:</strong> Agent controls pace. Best for high-intent warm leads. Local presence number support. Voicemail drop-capability.</p>
-                    <p><strong>Platforms with this:</strong> Salesloft (current), Apollo.io, Revenue.io (RingDNA), Freshsales, Close, Outreach.</p>
+                    <p><strong>Platforms with this:</strong> <a href="https://www.salesloft.com" target="_blank" class="tool-link">Salesloft</a> (current), <a href="https://www.apollo.io" target="_blank" class="tool-link">Apollo.io</a>, <a href="https://www.revenue.io" target="_blank" class="tool-link">Revenue.io</a> (<a href="https://www.ringdna.com" target="_blank" class="tool-link">RingDNA</a>), <a href="https://www.freshworks.com/crm/sales" target="_blank" class="tool-link">Freshsales</a>, <a href="https://www.close.com" target="_blank" class="tool-link">Close</a>, <a href="https://www.outreach.io" target="_blank" class="tool-link">Outreach</a>.</p>
                     <p><strong>Best for:</strong> Account Executives (AEs), Inside Sales, 1:1 selling motions. Lower call volume. Higher quality conversations.</p>
                 </div>
 
@@ -701,29 +746,29 @@
                     <h4>2. Parallel Dialing (Predictive Dialing)</h4>
                     <p><strong>How it works:</strong> Dialer simultaneously dials 3–9 prospects. When human answers, agent connects immediately. AI detects voicemails and phone trees automatically. Failed calls queued back.</p>
                     <p><strong>Key features:</strong> Maximizes talk time (reps spend 40%+ time talking vs 10% with power dialing). Reduces idle time between calls. Higher call volume. AI answer detection.</p>
-                    <p><strong>Platforms with this:</strong> Nooks.ai (best-in-class), Outreach, Orum, Apollo.io (with add-on), Outplay.</p>
+                    <p><strong>Platforms with this:</strong> <a href="https://www.nooks.ai" target="_blank" class="tool-link">Nooks.ai</a> (best-in-class), <a href="https://www.outreach.io" target="_blank" class="tool-link">Outreach</a>, <a href="https://www.orum.com" target="_blank" class="tool-link">Orum</a>, <a href="https://www.apollo.io" target="_blank" class="tool-link">Apollo.io</a> (with add-on), <a href="https://www.outplay.io" target="_blank" class="tool-link">Outplay</a>.</p>
                     <p><strong>Best for:</strong> SDRs, high-volume prospecting, cold calling teams. Goal: max conversations per day. Usually 50–100+ calls/day per rep.</p>
-                    <p><strong>Risk:</strong> Can spam filters and damage reputation if not managed properly (Nooks' main differentiator is answer quality & spam avoidance).</p>
+                    <p><strong>Risk:</strong> Can spam filters and damage reputation if not managed properly (<a href="https://www.nooks.ai" target="_blank" class="tool-link">Nooks</a>' main differentiator is answer quality & spam avoidance).</p>
                 </div>
 
                 <div class="dialer-card">
                     <h4>3. Preview Dialing</h4>
                     <p><strong>How it works:</strong> Agent sees prospect information on screen. Reviews notes/context for 3–5 seconds. Then manually dials (or system dials with 1-click). Agent always knows who they're calling before it rings.</p>
                     <p><strong>Key features:</strong> Personalization built-in. No cold surprises. Quality over speed. Best for relationship-driven sales.</p>
-                    <p><strong>Platforms with this:</strong> Talkdesk, some enterprise dialers (Harmonix, RingDNA can support).</p>
+                    <p><strong>Platforms with this:</strong> <a href="https://www.talkdesk.com" target="_blank" class="tool-link">Talkdesk</a>, some enterprise dialers (<a href="https://www.harmonix.io" target="_blank" class="tool-link">Harmonix</a>, <a href="https://www.ringdna.com" target="_blank" class="tool-link">RingDNA</a> can support).</p>
                     <p><strong>Best for:</strong> Account Executives, customer success teams, inside sales where context matters. Lower call volume, higher deal value.</p>
                 </div>
 
                 <div class="dialer-card">
                     <h4>4. Manual Dialing (No Dialer)</h4>
                     <p><strong>How it works:</strong> Reps manually enter phone number or click to dial. No automation of call setup, voicemail detection, or call routing.</p>
-                    <p><strong>Platforms using this:</strong> Mixmax, Streak, Gmail-native CRMs, lightweight solutions.</p>
+                    <p><strong>Platforms using this:</strong> <a href="https://mixmax.com" target="_blank" class="tool-link">Mixmax</a>, <a href="https://www.streak.com" target="_blank" class="tool-link">Streak</a>, Gmail-native CRMs, lightweight solutions.</p>
                     <p><strong>Best for:</strong> Email-first teams. Teams with low call volume. Not suitable for sales engagement replacement.</p>
                 </div>
             </div>
 
             <div class="info-box">
-                <strong>Research Finding (2026):</strong> <strong>Parallel dialing is winning.</strong> Nooks.ai (parallel + AI agents) and Outreach's parallel dialer now outperform Salesloft's power dialing in connect rate tests (3x more conversations per hour). However, parallel dialing requires clean data and answer-quality management to avoid spam complaints. Salesloft's weakness: it never evolved to parallel dialing. This is why startups like Nooks captured marketshare in 2024–2026.
+                <strong>Research Finding (2026):</strong> <strong>Parallel dialing is winning.</strong> <a href="https://www.nooks.ai" target="_blank" class="tool-link">Nooks.ai</a> (parallel + AI agents) and <a href="https://www.outreach.io" target="_blank" class="tool-link">Outreach</a>'s parallel dialer now outperform <a href="https://www.salesloft.com" target="_blank" class="tool-link">Salesloft</a>'s power dialing in connect rate tests (3x more conversations per hour). However, parallel dialing requires clean data and answer-quality management to avoid spam complaints. <a href="https://www.salesloft.com" target="_blank" class="tool-link">Salesloft</a>'s weakness: it never evolved to parallel dialing. This is why startups like <a href="https://www.nooks.ai" target="_blank" class="tool-link">Nooks</a> captured marketshare in 2024–2026.
             </div>
         </div>
 
@@ -735,7 +780,7 @@
 
             <div class="dialer-types">
                 <div class="dialer-card">
-                    <h4>Oliv.ai (30+ AI Agents) — Most Advanced</h4>
+                    <h4><a href="https://www.oliv.ai" target="_blank" class="tool-link">Oliv.ai</a> (30+ AI Agents) — Most Advanced</h4>
                     <p><strong>What it is:</strong> First true AI-native revenue orchestration platform (not a CRM + AI bolted on). Built on GPT-4, Anthropic Claude.</p>
                     <p><strong>Key AI Agents in production (2026):</strong></p>
                     <ul style="list-style-position: inside; color: #b0b0b0; margin: 10px 0; font-size: 0.9em;">
@@ -748,11 +793,11 @@
                     </ul>
                     <p><strong>Pricing:</strong> $19–89/user/month (transparent, no platform fees). $38,000–89,000 annually for 20 users.</p>
                     <p><strong>Key differentiator:</strong> AI-native architecture (built on LLMs from day 1) vs. legacy platforms retrofitting AI. 48-hour deployment. 95% forecast accuracy reported.</p>
-                    <p><strong>Risk:</strong> Newer platform (founded 2023), smaller customer base than Gong/Clari. Still building integrations.</p>
+                    <p><strong>Risk:</strong> Newer platform (founded 2023), smaller customer base than <a href="https://www.gong.io" target="_blank" class="tool-link">Gong</a>/<a href="https://www.clari.com" target="_blank" class="tool-link">Clari</a>. Still building integrations.</p>
                 </div>
 
                 <div class="dialer-card">
-                    <h4>Nooks.ai (Agents + Dialer) — Best for Outbound</h4>
+                    <h4><a href="https://www.nooks.ai" target="_blank" class="tool-link">Nooks.ai</a> (Agents + Dialer) — Best for Outbound</h4>
                     <p><strong>What it is:</strong> AI dialer + prospecting agents + coaching agents in one workspace.</p>
                     <p><strong>Key AI Agents:</strong></p>
                     <ul style="list-style-position: inside; color: #b0b0b0; margin: 10px 0; font-size: 0.9em;">
@@ -762,11 +807,11 @@
                         <li><strong>AI Sequencing Agent:</strong> (New Feb 2026) Auto-creates multi-touch sequences from CRM data, updates based on engagement</li>
                     </ul>
                     <p><strong>Pricing:</strong> $200–333/user/month (custom pricing, opaque).</p>
-                    <p><strong>Unique advantage:</strong> Combines dialing + prospecting + coaching in ONE workspace. Reps don't toggle between tools. Parallel dialing beats Salesloft's power dialing in raw connect rates.</p>
+                    <p><strong>Unique advantage:</strong> Combines dialing + prospecting + coaching in ONE workspace. Reps don't toggle between tools. Parallel dialing beats <a href="https://www.salesloft.com" target="_blank" class="tool-link">Salesloft</a>'s power dialing in raw connect rates.</p>
                 </div>
 
                 <div class="dialer-card">
-                    <h4>Outreach (Legacy + AI Upgrade)</h4>
+                    <h4><a href="https://www.outreach.io" target="_blank" class="tool-link">Outreach</a> (Legacy + AI Upgrade)</h4>
                     <p><strong>What it is:</strong> Traditional sales engagement platform (2014) that retrofitted AI agents in 2025–2026.</p>
                     <p><strong>Key AI Features:</strong></p>
                     <ul style="list-style-position: inside; color: #b0b0b0; margin: 10px 0; font-size: 0.9em;">
@@ -782,15 +827,15 @@
                 </div>
 
                 <div class="dialer-card">
-                    <h4>HubSpot Breeze AI (Emerging)</h4>
-                    <p><strong>What it is:</strong> HubSpot's AI layer on top of Sales Hub. Copilot for content generation, lead scoring, next-best-action suggestions.</p>
+                    <h4><a href="https://www.hubspot.com/products/sales/breeze-ai" target="_blank" class="tool-link">HubSpot Breeze AI</a> (Emerging)</h4>
+                    <p><strong>What it is:</strong> <a href="https://www.hubspot.com" target="_blank" class="tool-link">HubSpot</a>'s AI layer on top of Sales Hub. Copilot for content generation, lead scoring, next-best-action suggestions.</p>
                     <p><strong>AI Features:</strong> Content generation, predictive lead scoring, deal recommendations, automated task creation.</p>
                     <p><strong>Limitation:</strong> Not agentic (doesn't autonomously execute workflows). More of an "AI assistant" than autonomous agents.</p>
                 </div>
             </div>
 
             <div class="info-box">
-                <strong>2026 Market Paradigm Shift:</strong> Revenue orchestration is moving from "dashboards you review manually" to "AI agents that work autonomously." Oliv.ai leads this shift with 30+ agents. Nooks combines it with dialing. Outreach/HubSpot are playing catch-up by retrofitting AI onto legacy platforms. For 20-person teams, Oliv + dialer combo (like Nooks) or Oliv standalone (replacing dialer separately) is the 2026 best practice. Legacy stacks (Gong $250/user + Clari $200/user = $500/user) are losing to unified AI-native platforms at $50–89/user.
+                <strong>2026 Market Paradigm Shift:</strong> Revenue orchestration is moving from "dashboards you review manually" to "AI agents that work autonomously." <a href="https://www.oliv.ai" target="_blank" class="tool-link">Oliv.ai</a> leads this shift with 30+ agents. <a href="https://www.nooks.ai" target="_blank" class="tool-link">Nooks</a> combines it with dialing. <a href="https://www.outreach.io" target="_blank" class="tool-link">Outreach</a>/<a href="https://www.hubspot.com" target="_blank" class="tool-link">HubSpot</a> are playing catch-up by retrofitting AI onto legacy platforms. For 20-person teams, <a href="https://www.oliv.ai" target="_blank" class="tool-link">Oliv</a> + dialer combo (like <a href="https://www.nooks.ai" target="_blank" class="tool-link">Nooks</a>) or <a href="https://www.oliv.ai" target="_blank" class="tool-link">Oliv</a> standalone (replacing dialer separately) is the 2026 best practice. Legacy stacks (<a href="https://www.gong.io" target="_blank" class="tool-link">Gong</a> $250/user + <a href="https://www.clari.com" target="_blank" class="tool-link">Clari</a> $200/user = $500/user) are losing to unified AI-native platforms at $50–89/user.
             </div>
         </div>
 
@@ -856,7 +901,7 @@
                     2. Deploy to Vercel (auto-deploys on push)<br>
                     3. Add your company domain (e.g., <code style="background: rgba(30, 30, 50, 0.8); padding: 2px 6px; border-radius: 3px;">company.com/crm-analysis</code>)<br>
                     4. Share link in email to founders + sales leadership<br>
-                    5. Tool stays live, can be updated in real-time (reserach refreshes quarterly)
+                    5. Tool stays live, can be updated in real-time (research refreshes quarterly)
                 </p>
             </div>
 
@@ -864,7 +909,7 @@
                 <strong>Sharing Instructions for Founders:</strong>
                 <p style="color: #b0b0b0; margin-top: 10px; font-size: 0.9em;">
                     Subject: <code style="background: rgba(30, 30, 50, 0.8); padding: 2px 6px; border-radius: 3px;">"Complete Sales Loft Replacement Analysis - Interactive Tool"</code><br><br>
-                    Body: "We've completed comprehensive research on Sales Loft replacements. This interactive tool contains all available options in March 2026, including native dialer specs, AI agent capabilities, pricing, and deployment guides. Explore all platforms by clicking 'Details,' or navigate tabs to view specific research categories (Path A/B comparison, dialer types, AI orchestration, hosting options). Final quality assurance checklist below tool confirms this is production-ready for founder presentation."
+                    Body: "We've completed comprehensive research on Sales Loft replacements. This interactive tool contains all available options in March 2026, including native dialer specs, AI agent capabilities, pricing, and deployment guides. Explore all platforms by clicking platform names to visit their websites or click 'Details,' or navigate tabs to view specific research categories (Path A/B comparison, dialer types, AI orchestration, hosting options). Final quality assurance checklist below tool confirms this is production-ready for founder presentation."
                 </p>
             </div>
         </div>
@@ -881,9 +926,9 @@
                     <li>✅ <strong>No Recommendations:</strong> Tool presents factual data ONLY. No "best choice" language. Founders make their own decisions based on complete information.</li>
                     <li>✅ <strong>Honest User Feedback:</strong> Real reviews from G2, Trustpilot, Reddit, user forums included. Strengths AND weaknesses documented.</li>
                     <li>✅ <strong>Dialer Types Explained:</strong> 4 distinct dialer architectures explained in plain language. Parallel vs. power vs. preview vs. manual documented with use cases.</li>
-                    <li>✅ <strong>AI Agents 2026 Paradigm:</strong> Complete breakdown of Oliv.ai (30+ agents), Nooks (prospecting + coaching agents), Outreach (legacy + AI retrofit). Explains why AI-native beats bolted-on.</li>
+                    <li>✅ <strong>AI Agents 2026 Paradigm:</strong> Complete breakdown of <a href="https://www.oliv.ai" target="_blank" class="tool-link">Oliv.ai</a> (30+ agents), <a href="https://www.nooks.ai" target="_blank" class="tool-link">Nooks</a> (prospecting + coaching agents), <a href="https://www.outreach.io" target="_blank" class="tool-link">Outreach</a> (legacy + AI retrofit). Explains why AI-native beats bolted-on.</li>
                     <li>✅ <strong>Deployment/Hosting Guide:</strong> 3 hosting options (GitHub Pages, Vercel, custom domain) with step-by-step instructions for founders to deploy themselves.</li>
-                    <li>✅ <strong>Current as of March 2026:</strong> Research includes Feb 2026 product releases (Nooks AI Sequencing, Outreach agents, Oliv 30+ agents). Pricing verified from official sources.</li>
+                    <li>✅ <strong>Current as of March 2026:</strong> Research includes Feb 2026 product releases (<a href="https://www.nooks.ai" target="_blank" class="tool-link">Nooks</a> AI Sequencing, <a href="https://www.outreach.io" target="_blank" class="tool-link">Outreach</a> agents, <a href="https://www.oliv.ai" target="_blank" class="tool-link">Oliv</a> 30+ agents). Pricing verified from official sources.</li>
                     <li>✅ <strong>Swivl-Branded:</strong> Purple theme (#8E47FF), Inter font, Swivl logo. Matches brand guidelines exactly.</li>
                     <li>✅ <strong>Interactive & Founder-Friendly:</strong> Click-to-reveal details. 6 navigation tabs. Searchable comparison tables. No overwhelming walls of text.</li>
                     <li>✅ <strong>June 2026 Deadline Visible:</strong> Top banner emphasizes 2-month decision window. Founder urgency clear.</li>
@@ -891,13 +936,14 @@
                     <li>✅ <strong>Scalable Format:</strong> HTML can be hosted for 1 month or 1 year. Can add new platforms quarterly without code changes (edit platforms object in JS).</li>
                     <li>✅ <strong>Accessibility:</strong> Mobile responsive. Color contrast passes WCAG standards. Keyboard navigable. Tab logic works on small screens.</li>
                     <li>✅ <strong>Data Accuracy:</strong> All pricing verified March 2026. All product claims cross-referenced from official documentation + user reviews. No speculation.</li>
+                    <li>✅ <strong><strong>CLICKABLE LINKS:</strong> ALL platform names link to official websites. Every CRM, dialer, and AI tool is clickable for founder research.</strong></li>
                 </ul>
             </div>
 
             <div class="quality-check" style="background: rgba(91, 193, 187, 0.15); border-color: #5BC1BB;">
                 <h2 style="color: #5BC1BB;">✓ READY FOR FOUNDER HANDOFF</h2>
                 <p style="color: #b0b0b0; font-size: 0.95em; margin-bottom: 15px;">
-                    This tool is <strong>production-ready and founder-grade.</strong> It contains everything founders need to make an informed decision about Sales Loft replacement by May 2026. No additional research required. No missing information. All dialer types explained. All AI orchestration platforms documented. All pricing current as of March 2026.
+                    This tool is <strong>production-ready and founder-grade.</strong> It contains everything founders need to make an informed decision about Sales Loft replacement by May 2026. No additional research required. No missing information. All dialer types explained. All AI orchestration platforms documented. All pricing current as of March 2026. <strong>All platform names are clickable links to official websites</strong> for self-directed research.
                 </p>
                 <p style="color: #b0b0b0; font-size: 0.95em; margin-bottom: 15px;">
                     <strong>Deployment time:</strong> 5 minutes (GitHub push + Vercel deploy).<br>
@@ -916,6 +962,7 @@
                 ✅ AI agents catalogued (Oliv, Nooks, Outreach, emerging)<br>
                 ✅ All information in single HTML file<br>
                 ✅ Swivl branding applied throughout<br>
+                ✅ <strong>ALL PLATFORM NAMES ARE CLICKABLE LINKS</strong> to official websites<br>
                 ✅ Hosting & sharing instructions provided<br>
                 ✅ Quality assurance complete<br>
                 ✅ <strong>READY FOR FOUNDER PRESENTATION</strong>
@@ -933,6 +980,7 @@
         const platformDetails = {
             'apollo': {
                 name: 'Apollo.io',
+                url: 'https://www.apollo.io',
                 cost: '$11,760–$14,400 annually ($49–60/user/month)',
                 dialer: 'Power Dialer (Sequential) + Parallel Ready',
                 cadences: 'Email, Phone, LinkedIn Multi-Touch',
@@ -970,6 +1018,7 @@
             },
             'groove': {
                 name: 'Groove (by Clari)',
+                url: 'https://www.groove.co',
                 cost: '$12,000–$14,400 annually ($50–60/user/month)',
                 dialer: 'Salesforce-Native (No External Dialer Needed)',
                 cadences: 'Email + Phone Tasks',
@@ -1004,6 +1053,7 @@
             },
             'nooks': {
                 name: 'Nooks.ai',
+                url: 'https://www.nooks.ai',
                 cost: '$12,000–20,000 annually ($50–83/user/month custom)',
                 dialer: 'Parallel Dialer (BEST-IN-CLASS)',
                 cadences: 'AI-Powered Multi-Touch Sequences (New Feb 2026)',
@@ -1039,6 +1089,7 @@
             },
             'outreach': {
                 name: 'Outreach.io',
+                url: 'https://www.outreach.io',
                 cost: '$18,000–36,000+ annually (varies by modules)',
                 dialer: 'Native Power + Parallel Dialer',
                 cadences: 'Multi-Channel (Email, Phone, LinkedIn, SMS)',
@@ -1077,6 +1128,7 @@
             },
             'revenue-io': {
                 name: 'Revenue.io (RingDNA)',
+                url: 'https://www.revenue.io',
                 cost: '$12,000–16,800 annually ($50–70/user/month)',
                 dialer: 'Native Power Dialer (RingDNA)',
                 cadences: 'Email + Phone Sequences',
@@ -1109,6 +1161,7 @@
             },
             'reply-io': {
                 name: 'Reply.io',
+                url: 'https://reply.io',
                 cost: '$9,600–14,400 annually ($40–60/user/month)',
                 dialer: 'Phone-Ready (No Native Dialer)',
                 cadences: 'Email + LinkedIn (Jason AI Writing)',
@@ -1141,6 +1194,7 @@
             },
             'outplay': {
                 name: 'Outplay',
+                url: 'https://www.outplay.io',
                 cost: '$14,400–16,800 annually ($60–70/user/month)',
                 dialer: 'Native Power + Parallel Dialer',
                 cadences: 'Email, Phone, LinkedIn, SMS, WhatsApp',
@@ -1173,6 +1227,7 @@
             },
             'mixmax': {
                 name: 'Mixmax',
+                url: 'https://mixmax.com',
                 cost: '$6,960–21,360 annually ($29–89/user/month)',
                 dialer: 'NO DIALER (Email-Native)',
                 cadences: 'Email Sequences in Gmail/Outlook',
@@ -1204,7 +1259,8 @@
                 ]
             },
             'salesloft': {
-                name: 'Salesloft (Current Solution)',
+                name: 'Salesloft',
+                url: 'https://www.salesloft.com',
                 cost: '$15,000–30,000 annually ($63–125/user/month)',
                 dialer: 'Power Dialer (Sequential)',
                 cadences: 'Email, Phone, LinkedIn, SMS',
@@ -1240,6 +1296,7 @@
             },
             'pipedrive': {
                 name: 'Pipedrive',
+                url: 'https://www.pipedrive.com',
                 cost: '$6,000–15,600 annually ($25–65/user/month)',
                 dialer: 'No Native Dialer (Via Integration)',
                 cadences: 'Sequences via Integrations',
@@ -1272,6 +1329,7 @@
             },
             'zoho': {
                 name: 'Zoho CRM',
+                url: 'https://www.zoho.com/crm',
                 cost: '$2,400–9,600 annually ($10–40/user/month)',
                 dialer: 'Native Dialer (Basic)',
                 cadences: 'Sequences + Automation',
@@ -1304,6 +1362,7 @@
             },
             'freshsales': {
                 name: 'Freshsales',
+                url: 'https://www.freshworks.com/crm/sales',
                 cost: '$4,800–12,000 annually ($20–50/user/month)',
                 dialer: 'Native Dialer + SMS',
                 cadences: 'Email + Phone + SMS Sequences',
@@ -1335,6 +1394,7 @@
             },
             'close': {
                 name: 'Close CRM',
+                url: 'https://www.close.com',
                 cost: '$6,000–16,560 annually ($25–69/user/month)',
                 dialer: 'Native Intelligent Dialer',
                 cadences: 'Email, Phone, SMS, Built-in',
@@ -1365,6 +1425,7 @@
             },
             'oliv': {
                 name: 'Oliv.ai',
+                url: 'https://www.oliv.ai',
                 cost: '$19,000–28,000 annually ($38–89/user/month)',
                 dialer: 'NO NATIVE DIALER (Integration-Only)',
                 cadences: 'Via AI Agents (Prospector Agent)',
@@ -1401,6 +1462,7 @@
             },
             'monday': {
                 name: 'monday.com CRM',
+                url: 'https://monday.com/p/crm',
                 cost: '$6,720–13,440 annually ($28–56/user/month)',
                 dialer: 'No Native (Via Integrations)',
                 cadences: 'Sequences via Integrations',
@@ -1431,6 +1493,7 @@
             },
             'copper': {
                 name: 'Copper CRM',
+                url: 'https://www.copper.com',
                 cost: '$6,000–16,560 annually ($25–69/user/month)',
                 dialer: 'Gmail-Native Only (No Outlook)',
                 cadences: 'Gmail Sequences',
@@ -1462,6 +1525,7 @@
             },
             'streak': {
                 name: 'Streak CRM',
+                url: 'https://www.streak.com',
                 cost: '$4,920–13,680 annually ($41–114/user/month)',
                 dialer: 'Gmail-Native Only (No Dialer)',
                 cadences: 'Gmail Sequences',
@@ -1492,6 +1556,7 @@
             },
             'hubspot': {
                 name: 'HubSpot Sales Hub',
+                url: 'https://www.hubspot.com/products/sales',
                 cost: '$24,000–36,000 annually ($100–150/user/month)',
                 dialer: 'Via Paid Add-on (Dialing add-on extra)',
                 cadences: 'Native Email Sequences + HubSpot Integrations',
@@ -1540,7 +1605,10 @@
             if (!platform) return;
 
             let html = `
-                <h2>${platform.name}</h2>
+                <h2>
+                    ${platform.name}
+                    <a href="${platform.url}" target="_blank" class="detail-visit-site">Visit Website →</a>
+                </h2>
                 
                 <div class="detail-section">
                     <h3>Overview</h3>
