@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Swivl — Sales Stack Decision Tool 2026</title>
+  <title>Swivl &mdash; Sales Stack Decision Tool 2026</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%238E47FF'/><text x='50' y='65' font-size='70' fill='%2399EF83' text-anchor='middle' font-weight='bold'>$</text></svg>">
   <style>
@@ -64,10 +64,26 @@
     table { width: 100%; border-collapse: collapse; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; font-size: 13px; }
     thead { background: rgba(142,71,255,0.12); border-bottom: 1px solid var(--purple-border); }
     th { padding: 13px 16px; text-align: left; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.6px; color: var(--purple); white-space: nowrap; }
+    th.chk-th { width: 40px; padding: 13px 10px; }
     tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
     tbody tr:last-child { border-bottom: none; }
     tbody tr:hover { background: rgba(142,71,255,0.07); }
+    tbody tr.row-selected { background: rgba(142,71,255,0.13) !important; }
     td { padding: 14px 16px; vertical-align: middle; }
+    td.chk-td { padding: 14px 10px; width: 40px; }
+    .platform-check {
+      appearance: none; -webkit-appearance: none;
+      width: 16px; height: 16px; border: 1.5px solid var(--border);
+      border-radius: 3px; background: transparent; cursor: pointer;
+      transition: all 0.15s; display: block; position: relative;
+    }
+    .platform-check:hover { border-color: var(--purple); }
+    .platform-check:checked { background: var(--purple); border-color: var(--purple); }
+    .platform-check:checked::after {
+      content: ''; position: absolute; left: 4px; top: 1px;
+      width: 5px; height: 9px; border: 2px solid #fff;
+      border-top: none; border-left: none; transform: rotate(45deg);
+    }
     .platform-cell { display: flex; flex-direction: column; gap: 3px; }
     .platform-name { font-weight: 600; color: var(--purple); text-decoration: underline; text-decoration-color: var(--purple-border); text-underline-offset: 3px; cursor: pointer; transition: color 0.2s; font-size: 13.5px; }
     .platform-name:hover { color: #d4a7ff; }
@@ -132,17 +148,68 @@
     .dp-list { list-style: none; margin: 0; }
     .dp-list li { padding: 7px 0 7px 20px; position: relative; font-size: 13px; color: var(--muted); border-bottom: 1px solid rgba(42,42,78,0.5); }
     .dp-list li:last-child { border-bottom: none; }
-    .dp-list li::before { content: 'checkmark'; position: absolute; left: 0; color: var(--green); font-weight: 700; font-style: normal; }
-    .dp-list.cons li::before { content: 'x'; color: var(--danger); }
+    .dp-list li::before { content: '\2713'; position: absolute; left: 0; color: var(--green); font-weight: 700; }
+    .dp-list.cons li::before { content: '\2717'; color: var(--danger); }
     .dp-verdict { background: var(--purple-dim); border: 1px solid var(--purple-border); border-radius: 6px; padding: 14px; font-size: 13px; color: #d4a7ff; font-weight: 600; line-height: 1.5; }
     .dp-cost { background: var(--green-dim); border: 1px solid rgba(153,239,131,0.3); border-radius: 6px; padding: 12px 14px; font-size: 13px; color: var(--green); font-weight: 600; margin-bottom: 16px; }
     .dp-quote { background: rgba(22,22,48,0.9); border-left: 3px solid var(--purple); padding: 11px 14px; border-radius: 0 6px 6px 0; font-style: italic; font-size: 12px; color: var(--muted); margin-bottom: 8px; }
     .dp-visit { display: inline-block; background: var(--purple); color: #fff; padding: 9px 16px; border-radius: 6px; font-size: 12px; font-weight: 600; text-decoration: none; margin-bottom: 20px; transition: background 0.2s; }
     .dp-visit:hover { background: #7a38e0; }
+    /* Compare bar */
+    .compare-bar {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 500;
+      background: rgba(14,14,26,0.98); border-top: 1px solid var(--purple-border);
+      backdrop-filter: blur(12px); padding: 12px 40px;
+      display: none; align-items: center; gap: 16px;
+    }
+    .compare-bar.visible { display: flex; }
+    .compare-bar-label { font-size: 11px; font-weight: 700; color: var(--purple); white-space: nowrap; text-transform: uppercase; letter-spacing: 0.8px; }
+    .compare-bar-chips { display: flex; gap: 8px; flex: 1; flex-wrap: wrap; align-items: center; }
+    .compare-chip { background: var(--purple-dim); border: 1px solid var(--purple-border); color: #d4a7ff; padding: 4px 10px; border-radius: 14px; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
+    .compare-chip-remove { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 15px; line-height: 1; padding: 0 0 1px; transition: color 0.15s; }
+    .compare-chip-remove:hover { color: var(--danger); }
+    .compare-bar-actions { display: flex; gap: 8px; flex-shrink: 0; }
+    .compare-clear-btn { background: transparent; border: 1px solid var(--border); color: var(--muted); padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; font-family: 'Inter', sans-serif; transition: all 0.2s; }
+    .compare-clear-btn:hover { border-color: var(--danger); color: var(--danger); }
+    .compare-go-btn { background: var(--purple); border: none; color: #fff; padding: 8px 18px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 700; font-family: 'Inter', sans-serif; transition: background 0.2s; }
+    .compare-go-btn:hover { background: #7a38e0; }
+    /* Compare modal */
+    .cmp-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.78); z-index: 1100; display: none; backdrop-filter: blur(4px); }
+    .cmp-overlay.show { display: block; }
+    .cmp-modal { position: fixed; inset: 24px; z-index: 1200; display: none; flex-direction: column; overflow: hidden; background: linear-gradient(160deg, #1a1a2e 0%, #12121f 100%); border: 1px solid var(--purple-border); border-radius: 12px; }
+    .cmp-modal.show { display: flex; }
+    .cmp-modal-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 28px; border-bottom: 1px solid var(--border); background: rgba(18,18,31,0.95); flex-shrink: 0; }
+    .cmp-modal-title { font-size: 16px; font-weight: 700; color: #fff; }
+    .cmp-modal-sub { font-size: 12px; color: var(--muted); margin-top: 3px; }
+    .cmp-close-btn { background: var(--purple-dim); border: 1px solid var(--purple-border); color: var(--purple); cursor: pointer; font-size: 18px; width: 36px; height: 36px; border-radius: 6px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; flex-shrink: 0; }
+    .cmp-close-btn:hover { background: rgba(142,71,255,0.3); }
+    .cmp-modal-body { flex: 1; overflow: auto; padding: 0; }
+    .cmp-table { border-collapse: collapse; width: 100%; font-size: 13px; }
+    .cmp-table th { padding: 16px 20px; text-align: left; font-size: 12px; font-weight: 700; border-bottom: 2px solid var(--border); white-space: nowrap; min-width: 200px; position: sticky; top: 0; z-index: 2; background: #1a1a2e; vertical-align: bottom; }
+    .cmp-table th:first-child { min-width: 150px; left: 0; z-index: 3; background: #1a1a2e; }
+    .cmp-table th.col-baseline { border-bottom-color: var(--danger); }
+    .cmp-table th.col-platform { border-bottom-color: var(--purple); }
+    .cmp-th-name { font-size: 14px; color: #fff; margin-bottom: 3px; font-weight: 700; }
+    .cmp-th-sub { font-size: 11px; color: var(--muted); font-weight: 400; }
+    .cmp-th-cost { font-size: 11px; font-weight: 600; margin-top: 6px; }
+    .cmp-th-cost.bad { color: var(--danger); }
+    .cmp-th-cost.good { color: var(--green); }
+    .cmp-table td { padding: 13px 20px; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.5; }
+    .cmp-table td:first-child { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--purple); position: sticky; left: 0; background: #1a1a2e; z-index: 1; white-space: nowrap; }
+    .cmp-table tr:last-child td { border-bottom: none; }
+    .cmp-table tr:hover td { background: rgba(142,71,255,0.05); }
+    .cmp-table tr:hover td:first-child { background: #1c1c34; }
+    .cmp-val { font-size: 13px; color: var(--text); }
+    .cmp-val.good { color: var(--green); }
+    .cmp-val.warn { color: var(--warn); }
+    .cmp-val.bad  { color: var(--danger); }
+    .cmp-val.muted { color: var(--muted); }
+    .cmp-verdict { font-size: 12px; color: #d4a7ff; line-height: 1.6; }
+    .cmp-bestfor { font-size: 12px; color: var(--muted); line-height: 1.6; }
     footer { text-align: center; padding: 16px 40px; border-top: 1px solid var(--border); background: rgba(18,18,31,0.8); font-size: 12px; color: var(--muted); position: relative; z-index: 1; }
     footer a { color: var(--purple); text-decoration: none; }
     footer a:hover { color: #d4a7ff; }
-    @media (max-width: 900px) { .sidebar { width: 200px; } .main { padding: 24px 20px; } .detail-panel { width: 100%; max-width: 95vw; } header { padding: 14px 20px; } h1 { font-size: 13px; } }
+    @media (max-width: 900px) { .sidebar { width: 200px; } .main { padding: 24px 20px; } .detail-panel { width: 100%; max-width: 95vw; } header { padding: 14px 20px; } h1 { font-size: 13px; } .compare-bar { padding: 10px 16px; } .cmp-modal { inset: 0; border-radius: 0; } }
     @media (max-width: 650px) { .layout { flex-direction: column; } .sidebar { width: 100%; flex-direction: row; flex-wrap: wrap; padding: 12px; border-right: none; border-bottom: 1px solid var(--border); } .sidebar-label { display: none; } .tab-btn { width: auto; font-size: 12px; padding: 8px 10px; } .sidebar-context { display: none; } }
   </style>
 </head>
@@ -168,8 +235,8 @@
     <div class="sidebar-label">Info</div>
     <button class="tab-btn" onclick="switchTab('about',this)"><span class="icon">&#128100;</span> About This Analysis</button>
     <div class="sidebar-context">
-      <strong>Context</strong>
-      Salesloft is up for June 2026 renewal. This tool compares replacement options across two strategic paths to help founders decide the best direction.
+      <strong>How to use</strong>
+      Check the boxes next to platforms you want to evaluate, then click &ldquo;Compare vs. Current Stack&rdquo; to see a side-by-side breakdown against your existing Salesloft + Salesforce setup.
     </div>
   </nav>
 
@@ -178,11 +245,11 @@
     <div id="pathA" class="tab-content active">
       <div class="section-header">
         <div class="section-title">Path A: Keep Salesforce + Replace Salesloft</div>
-        <div class="section-sub"><strong>Sales Engagement Replacements</strong> &nbsp;&middot;&nbsp; Timeline: 2&ndash;4 weeks &nbsp;&middot;&nbsp; Potential Annual Savings: $45,000&ndash;$80,000+</div>
+        <div class="section-sub"><strong>Sales Engagement Replacements</strong> &nbsp;&middot;&nbsp; Timeline: 2&ndash;4 weeks &nbsp;&middot;&nbsp; Potential Annual Savings: $45,000&ndash;$80,000+ &nbsp;&middot;&nbsp; <strong style="color:var(--teal);">Check rows to compare side-by-side</strong></div>
       </div>
       <div class="table-wrapper">
         <table>
-          <thead><tr><th>Platform</th><th>Annual Cost (20 users)</th><th>Native Dialer</th><th>Parallel Dialing</th><th>Social Cadences</th><th>AI</th><th></th></tr></thead>
+          <thead><tr><th class="chk-th"></th><th>Platform</th><th>Annual Cost (20 users)</th><th>Native Dialer</th><th>Parallel Dialing</th><th>Social Cadences</th><th>AI</th><th></th></tr></thead>
           <tbody id="tA"></tbody>
         </table>
       </div>
@@ -191,11 +258,11 @@
     <div id="pathB" class="tab-content">
       <div class="section-header">
         <div class="section-title">Path B: Replace Both Salesforce + Salesloft</div>
-        <div class="section-sub"><strong>Unified CRM Solutions</strong> &nbsp;&middot;&nbsp; Timeline: 3&ndash;5 weeks &nbsp;&middot;&nbsp; Potential Annual Savings: $39,000&ndash;$85,000+</div>
+        <div class="section-sub"><strong>Unified CRM Solutions</strong> &nbsp;&middot;&nbsp; Timeline: 3&ndash;5 weeks &nbsp;&middot;&nbsp; Potential Annual Savings: $39,000&ndash;$85,000+ &nbsp;&middot;&nbsp; <strong style="color:var(--teal);">Check rows to compare side-by-side</strong></div>
       </div>
       <div class="table-wrapper">
         <table>
-          <thead><tr><th>Platform</th><th>Annual Cost (20 users)</th><th>Native Dialer</th><th>Cadences</th><th>AI</th><th>Ease</th><th></th></tr></thead>
+          <thead><tr><th class="chk-th"></th><th>Platform</th><th>Annual Cost (20 users)</th><th>Native Dialer</th><th>Cadences</th><th>AI</th><th>Ease</th><th></th></tr></thead>
           <tbody id="tB"></tbody>
         </table>
       </div>
@@ -208,35 +275,42 @@
       </div>
       <div class="card-grid">
         <div class="info-card">
-          <div class="card-title"><a href="https://www.oliv.ai" target="_blank">Oliv.ai</a> &mdash; 30+ AI Agents (Most Advanced)</div>
+          <div class="card-title"><a href="https://www.oliv.ai" target="_blank" rel="noopener noreferrer">Oliv.ai</a> &mdash; 30+ AI Agents (Most Advanced)</div>
           <div class="card-body">AI-native revenue orchestration. Agents include Forecaster, Deal Driver, CRM Manager, Prospector, and Coaching &mdash; running autonomously in the background.
             <div class="card-tags"><span class="badge b-purple">$38&ndash;89/user/mo</span><span class="badge b-teal">Replaces Gong + Clari</span><span class="badge b-warn">No native dialer</span></div>
             <div style="margin-top:12px;font-size:12px;color:var(--muted);">Saves <strong style="color:var(--green);">$276K&ndash;$776K/yr</strong> by replacing multiple tools.<br><br><em>"30+ agents working autonomously transformed our rev ops." &mdash; CRO, 2026</em></div>
           </div>
         </div>
         <div class="info-card">
-          <div class="card-title"><a href="https://www.nooks.ai" target="_blank">Nooks.ai</a> &mdash; Parallel Dialer + AI Agents</div>
+          <div class="card-title"><a href="https://www.nooks.ai" target="_blank" rel="noopener noreferrer">Nooks.ai</a> &mdash; Parallel Dialer + AI Agents</div>
           <div class="card-body">Best parallel dialer combined with prospecting, coaching, and sequencing agents in one workspace. No separate dialer tool needed.
             <div class="card-tags"><span class="badge b-purple">$12,000&ndash;$20,000/yr (20 users)</span><span class="badge b-green">Native parallel dialer</span></div>
             <div style="margin-top:12px;font-size:12px;color:var(--muted);"><em>"3x more conversations per hour. Our team felt 5 years ahead." &mdash; Sales Manager &amp; CRO</em></div>
           </div>
         </div>
         <div class="info-card">
-          <div class="card-title"><a href="https://www.outreach.io" target="_blank">Outreach.io</a> &mdash; Legacy Platform + AI Retrofit</div>
+          <div class="card-title"><a href="https://www.gong.io/products/engage" target="_blank" rel="noopener noreferrer">Gong Engage</a> &mdash; Conversation AI + Sequences</div>
+          <div class="card-body">Built on top of Gong&rsquo;s market-leading conversation intelligence platform. If the team already pays for Gong, this replaces Salesloft at near-zero incremental cost.
+            <div class="card-tags"><span class="badge b-purple">$15,000&ndash;$25,000/yr</span><span class="badge b-teal">Conversation AI + Coaching</span><span class="badge b-warn">Power dialing only</span></div>
+            <div style="margin-top:12px;font-size:12px;color:var(--muted);"><em>"We were already paying for Gong &mdash; Engage replaced Salesloft and eliminated one invoice." &mdash; VP Sales, G2 2025</em></div>
+          </div>
+        </div>
+        <div class="info-card">
+          <div class="card-title"><a href="https://www.outreach.io" target="_blank" rel="noopener noreferrer">Outreach.io</a> &mdash; Legacy Platform + AI Retrofit</div>
           <div class="card-body">Founded 2014, now with 30+ AI agents added in 2025&ndash;26. Most enterprise-grade option. Deep Salesforce integration.
             <div class="card-tags"><span class="badge b-purple">$18,000&ndash;$36,000+/yr</span><span class="badge b-teal">30+ AI Agents</span><span class="badge b-warn">Pre-AI architecture</span></div>
             <div style="margin-top:12px;font-size:12px;color:var(--muted);">Best for enterprise teams (50+ reps) already deep in the Salesforce ecosystem.</div>
           </div>
         </div>
         <div class="info-card">
-          <div class="card-title"><a href="https://www.clay.com" target="_blank">Clay</a> &mdash; AI Prospecting &amp; Research Engine</div>
+          <div class="card-title"><a href="https://www.clay.com" target="_blank" rel="noopener noreferrer">Clay</a> &mdash; AI Prospecting &amp; Research Engine</div>
           <div class="card-body">Not a CRM or dialer &mdash; a supercharged AI research layer connecting to 150+ data sources. Automates prospect research, enrichment, and hyper-personalized outreach at scale.
             <div class="card-tags"><span class="badge b-purple">Custom / Credit-based</span><span class="badge b-teal">Waterfall enrichment</span><span class="badge b-warn">Steep learning curve</span></div>
             <div style="margin-top:12px;font-size:12px;color:var(--muted);">Best stacked on top of your existing CRM. Essential for teams running hyper-personalized outbound at volume.</div>
           </div>
         </div>
         <div class="info-card">
-          <div class="card-title"><a href="https://www.apollo.io" target="_blank">Apollo.io</a> &mdash; AI Writing + Bundled Data</div>
+          <div class="card-title"><a href="https://www.apollo.io" target="_blank" rel="noopener noreferrer">Apollo.io</a> &mdash; AI Writing + Bundled Data</div>
           <div class="card-body">275M+ B2B contacts with GPT-4 email writing built-in. Best all-in-one for teams wanting data + sequencing + AI in one tool.
             <div class="card-tags"><span class="badge b-purple">$11,760&ndash;$14,400/yr</span><span class="badge b-teal">GPT-4 email writing</span><span class="badge b-warn">Data accuracy ~65%</span></div>
             <div style="margin-top:12px;font-size:12px;color:var(--muted);"><em>"Apollo feels dated vs. Nooks for pure dialing, but the bundled database is hard to replicate." &mdash; G2 reviewer</em></div>
@@ -257,12 +331,13 @@
             <div class="card-tags"><span class="badge b-green">Best for: AEs, warm leads</span><span class="badge b-muted">~60&ndash;80 dials/day</span></div>
             <div style="margin-top:14px;font-weight:600;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px;">Platforms</div>
             <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:7px;">
-              <a href="https://www.salesloft.com" target="_blank" class="badge b-purple">Salesloft</a>
-              <a href="https://www.apollo.io" target="_blank" class="badge b-purple">Apollo.io</a>
-              <a href="https://www.revenue.io" target="_blank" class="badge b-purple">Revenue.io</a>
-              <a href="https://www.close.com" target="_blank" class="badge b-purple">Close CRM</a>
-              <a href="https://www.outreach.io" target="_blank" class="badge b-purple">Outreach</a>
-              <a href="https://www.freshworks.com/crm/sales" target="_blank" class="badge b-purple">Freshsales</a>
+              <a href="https://www.salesloft.com" target="_blank" rel="noopener noreferrer" class="badge b-purple">Salesloft</a>
+              <a href="https://www.apollo.io" target="_blank" rel="noopener noreferrer" class="badge b-purple">Apollo.io</a>
+              <a href="https://www.revenue.io" target="_blank" rel="noopener noreferrer" class="badge b-purple">Revenue.io</a>
+              <a href="https://www.close.com" target="_blank" rel="noopener noreferrer" class="badge b-purple">Close CRM</a>
+              <a href="https://www.outreach.io" target="_blank" rel="noopener noreferrer" class="badge b-purple">Outreach</a>
+              <a href="https://www.freshworks.com/crm/sales" target="_blank" rel="noopener noreferrer" class="badge b-purple">Freshsales</a>
+              <a href="https://www.gong.io/products/engage" target="_blank" rel="noopener noreferrer" class="badge b-purple">Gong Engage</a>
             </div>
           </div>
         </div>
@@ -272,10 +347,10 @@
             <div class="card-tags"><span class="badge b-green">Best for: SDRs, cold outbound</span><span class="badge b-teal">3&ndash;5x more connects/hour</span></div>
             <div style="margin-top:14px;font-weight:600;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px;">Platforms &amp; Pricing</div>
             <div style="margin-top:10px;display:grid;gap:8px;">
-              <div style="background:rgba(28,28,50,0.7);border:1px solid var(--border);border-radius:6px;padding:10px 14px;font-size:12px;"><a href="https://www.nooks.ai" target="_blank" style="color:var(--purple);font-weight:700;">Nooks.ai</a><span style="color:var(--muted);"> &mdash; Best-in-class. $12,000&ndash;$20,000/yr (20 users). AI answer detection + coaching agents.</span></div>
-              <div style="background:rgba(28,28,50,0.7);border:1px solid var(--border);border-radius:6px;padding:10px 14px;font-size:12px;"><a href="https://www.outreach.io" target="_blank" style="color:var(--purple);font-weight:700;">Outreach.io</a><span style="color:var(--muted);"> &mdash; Parallel + power combo. $18,000&ndash;$36,000+/yr. Enterprise-grade.</span></div>
-              <div style="background:rgba(28,28,50,0.7);border:1px solid var(--border);border-radius:6px;padding:10px 14px;font-size:12px;"><a href="https://www.orum.com" target="_blank" style="color:var(--purple);font-weight:700;">Orum</a><span style="color:var(--muted);"> &mdash; Call-acceleration specialist. Custom pricing. Auto-logs to CRM.</span></div>
-              <div style="background:rgba(28,28,50,0.7);border:1px solid var(--border);border-radius:6px;padding:10px 14px;font-size:12px;"><a href="https://www.outplay.io" target="_blank" style="color:var(--purple);font-weight:700;">Outplay</a><span style="color:var(--muted);"> &mdash; Parallel + WhatsApp. $14,400&ndash;$16,800/yr. Unique for global teams.</span></div>
+              <div style="background:rgba(28,28,50,0.7);border:1px solid var(--border);border-radius:6px;padding:10px 14px;font-size:12px;"><a href="https://www.nooks.ai" target="_blank" rel="noopener noreferrer" style="color:var(--purple);font-weight:700;">Nooks.ai</a><span style="color:var(--muted);"> &mdash; Best-in-class. $12,000&ndash;$20,000/yr (20 users). AI answer detection + coaching agents.</span></div>
+              <div style="background:rgba(28,28,50,0.7);border:1px solid var(--border);border-radius:6px;padding:10px 14px;font-size:12px;"><a href="https://www.outreach.io" target="_blank" rel="noopener noreferrer" style="color:var(--purple);font-weight:700;">Outreach.io</a><span style="color:var(--muted);"> &mdash; Parallel + power combo. $18,000&ndash;$36,000+/yr. Enterprise-grade.</span></div>
+              <div style="background:rgba(28,28,50,0.7);border:1px solid var(--border);border-radius:6px;padding:10px 14px;font-size:12px;"><a href="https://www.orum.com" target="_blank" rel="noopener noreferrer" style="color:var(--purple);font-weight:700;">Orum</a><span style="color:var(--muted);"> &mdash; Call-acceleration specialist. Custom pricing. Auto-logs to CRM.</span></div>
+              <div style="background:rgba(28,28,50,0.7);border:1px solid var(--border);border-radius:6px;padding:10px 14px;font-size:12px;"><a href="https://www.outplay.io" target="_blank" rel="noopener noreferrer" style="color:var(--purple);font-weight:700;">Outplay</a><span style="color:var(--muted);"> &mdash; Parallel + WhatsApp. $14,400&ndash;$16,800/yr. Unique for global teams.</span></div>
             </div>
           </div>
         </div>
@@ -284,8 +359,8 @@
           <div class="card-body">Rep sees full prospect profile before the system dials. Prioritizes personalization over speed. Best for enterprise AEs on complex, high-value accounts.
             <div class="card-tags"><span class="badge b-teal">Best for: Enterprise AEs</span><span class="badge b-muted">Quality over volume</span></div>
             <div style="margin-top:10px;display:grid;gap:8px;">
-              <div style="background:rgba(28,28,50,0.7);border:1px solid var(--border);border-radius:6px;padding:10px 14px;font-size:12px;"><a href="https://www.talkdesk.com" target="_blank" style="color:var(--purple);font-weight:700;">Talkdesk</a><span style="color:var(--muted);"> &mdash; Enterprise preview dialing. Custom pricing. Best for high-ACV deals needing deep prep.</span></div>
-              <div style="background:rgba(28,28,50,0.7);border:1px solid var(--border);border-radius:6px;padding:10px 14px;font-size:12px;"><a href="https://www.outreach.io" target="_blank" style="color:var(--purple);font-weight:700;">Outreach</a><span style="color:var(--muted);"> &mdash; Preview mode available alongside SDR parallel dialing.</span></div>
+              <div style="background:rgba(28,28,50,0.7);border:1px solid var(--border);border-radius:6px;padding:10px 14px;font-size:12px;"><a href="https://www.talkdesk.com" target="_blank" rel="noopener noreferrer" style="color:var(--purple);font-weight:700;">Talkdesk</a><span style="color:var(--muted);"> &mdash; Enterprise preview dialing. Custom pricing. Best for high-ACV deals needing deep prep.</span></div>
+              <div style="background:rgba(28,28,50,0.7);border:1px solid var(--border);border-radius:6px;padding:10px 14px;font-size:12px;"><a href="https://www.outreach.io" target="_blank" rel="noopener noreferrer" style="color:var(--purple);font-weight:700;">Outreach</a><span style="color:var(--muted);"> &mdash; Preview mode available alongside SDR parallel dialing.</span></div>
             </div>
           </div>
         </div>
@@ -294,11 +369,11 @@
           <div class="card-body">Rep manually clicks to dial. No automation. Lowest friction to set up, lowest call volume output.
             <div class="card-tags"><span class="badge b-warn">Best for: Email-heavy teams</span><span class="badge b-danger">~20&ndash;40 dials/day max</span></div>
             <div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:7px;">
-              <a href="https://mixmax.com" target="_blank" class="badge b-muted">Mixmax</a>
-              <a href="https://www.streak.com" target="_blank" class="badge b-muted">Streak</a>
-              <a href="https://attio.com" target="_blank" class="badge b-muted">Attio</a>
-              <a href="https://www.folk.app" target="_blank" class="badge b-muted">Folk</a>
-              <a href="https://monday.com/p/crm" target="_blank" class="badge b-muted">monday CRM</a>
+              <a href="https://mixmax.com" target="_blank" rel="noopener noreferrer" class="badge b-muted">Mixmax</a>
+              <a href="https://www.streak.com" target="_blank" rel="noopener noreferrer" class="badge b-muted">Streak</a>
+              <a href="https://attio.com" target="_blank" rel="noopener noreferrer" class="badge b-muted">Attio</a>
+              <a href="https://www.folk.app" target="_blank" rel="noopener noreferrer" class="badge b-muted">Folk</a>
+              <a href="https://monday.com/p/crm" target="_blank" rel="noopener noreferrer" class="badge b-muted">monday CRM</a>
             </div>
           </div>
         </div>
@@ -328,8 +403,8 @@
           <ul class="about-contact-list">
             <li><strong>Email:</strong> <a href="mailto:mlanger@swivl.com">mlanger@swivl.com</a></li>
             <li><strong>Phone:</strong> <a href="tel:6502973056">650-297-3056</a></li>
-            <li><strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/michael-langer-8358492b5/" target="_blank">Profile &#8594;</a></li>
-            <li><strong>Calendar:</strong> <a href="https://calendly.com/mikeslanger/8-16-minute-chat" target="_blank">Book time &#8594;</a></li>
+            <li><strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/michael-langer-8358492b5/" target="_blank" rel="noopener noreferrer">Profile &#8594;</a></li>
+            <li><strong>Calendar:</strong> <a href="https://calendly.com/mikeslanger/8-16-minute-chat" target="_blank" rel="noopener noreferrer">Book time &#8594;</a></li>
           </ul>
         </div>
         <div class="about-bestfit">
@@ -339,7 +414,7 @@
         <div class="about-toolkit">
           <div class="about-toolkit-title">&#128736;&#65039; AI Toolkit</div>
           <div class="about-toolkit-sub">95% complete (scripts still need tightening)</div>
-          <a href="https://sales-ai-toolkit-production-3963.up.railway.app/" target="_blank" class="about-toolkit-btn">&#9881;&#65039; Visit AI Toolkit</a>
+          <a href="https://sales-ai-toolkit-production-3963.up.railway.app/" target="_blank" rel="noopener noreferrer" class="about-toolkit-btn">&#9881;&#65039; Visit AI Toolkit</a>
         </div>
         <div class="about-footer">Made by Michael S. Langer for Swivl. Built to be useful, not flashy, not a diagram.</div>
       </div>
@@ -349,7 +424,7 @@
 </div>
 
 <footer>
-  Built by <a href="mailto:mlanger@swivl.com">Michael S. Langer</a> for Swivl &nbsp;&middot;&nbsp; Pricing verified March 2026 &nbsp;&middot;&nbsp; <a href="https://calendly.com/mikeslanger/8-16-minute-chat" target="_blank">Book time &#8594;</a>
+  Built by <a href="mailto:mlanger@swivl.com">Michael S. Langer</a> for Swivl &nbsp;&middot;&nbsp; Pricing verified March 2026 &nbsp;&middot;&nbsp; <a href="https://calendly.com/mikeslanger/8-16-minute-chat" target="_blank" rel="noopener noreferrer">Book time &#8594;</a>
 </footer>
 
 <div class="overlay" id="overlay" onclick="closePanel()"></div>
@@ -358,41 +433,93 @@
   <div id="detailContent"></div>
 </div>
 
+<!-- Compare bar (appears at bottom when platforms are checked) -->
+<div class="compare-bar" id="compareBar">
+  <span class="compare-bar-label">Selected: <span id="compareCount">0</span></span>
+  <div class="compare-bar-chips" id="compareChips"></div>
+  <div class="compare-bar-actions">
+    <button class="compare-clear-btn" onclick="clearCompare()">Clear all</button>
+    <button class="compare-go-btn" onclick="openComparison()">Compare vs. Current Stack &#8594;</button>
+  </div>
+</div>
+
+<!-- Compare modal -->
+<div class="cmp-overlay" id="cmpOverlay" onclick="closeComparison()"></div>
+<div class="cmp-modal" id="cmpModal">
+  <div class="cmp-modal-header">
+    <div>
+      <div class="cmp-modal-title">Side-by-Side Comparison</div>
+      <div class="cmp-modal-sub">Current Salesloft + Salesforce stack vs. selected alternatives &mdash; all specs verified March 2026</div>
+    </div>
+    <button class="cmp-close-btn" onclick="closeComparison()">&#10005;</button>
+  </div>
+  <div class="cmp-modal-body">
+    <div style="overflow-x:auto;height:100%;">
+      <table class="cmp-table" id="cmpTable"></table>
+    </div>
+  </div>
+</div>
+
 <script>
+// ─── Path A Data ──────────────────────────────────────────────────────────────
 var pathAData=[
-  {id:"apollo",name:"Apollo.io",url:"https://www.apollo.io",pos:"All-in-one data + outreach",cost:"$11,760\u2013$14,400",costCls:"cost-premium",dialer:{l:"Native Power Dialer",c:"b-green"},parallel:{l:"Power Only",c:"b-warn"},social:{l:"LinkedIn + Email",c:"b-green"},ai:{l:"GPT-4 Writing",c:"b-teal"},features:["275M+ B2B contacts","Power dialer native","Email sequences","LinkedIn automation","Salesforce sync"],cons:["Data accuracy ~65%","Trustpilot 2.2\u2605 (support issues)","No parallel dialer"],bestFor:"SDR teams wanting bundled data + outreach in one tool.",verdict:"Great starting point. Replace Salesloft AND get a database. Watch data quality.",quotes:["\"Data accuracy ~65%. Good for volume.\" \u2014 Sales Manager, G2","\"Feels dated vs Nooks for pure dialing.\" \u2014 G2 reviewer"]},
-  {id:"groove",name:"Groove (Clari)",url:"https://www.groove.co",pos:"Salesforce-native engagement",cost:"$12,000\u2013$14,400",costCls:"cost-premium",dialer:{l:"Native Dialer",c:"b-green"},parallel:{l:"Flow Dialing",c:"b-warn"},social:{l:"Email + Calls",c:"b-teal"},ai:{l:"Basic",c:"b-muted"},features:["100% Salesforce native","Zero data sync lag","Activity auto-logging","Flow (sequential) dialing","Email + calendar focus"],cons:["Basic AI features","No true parallel dialing","Clari dependency adds cost"],bestFor:"Teams deeply embedded in Salesforce who need zero sync friction.",verdict:"Safe, reliable swap if you love Salesforce and hate sync issues.",quotes:["\"Zero lag between Groove and SFDC. It just works.\" \u2014 G2 4.1\u2605"]},
-  {id:"nooks",name:"Nooks.ai",url:"https://www.nooks.ai",pos:"AI parallel dialer + sequences",cost:"$12,000\u2013$20,000",costCls:"cost-premium",dialer:{l:"Parallel Dialer",c:"b-green"},parallel:{l:"Best-in-Class",c:"b-green"},social:{l:"Email + AI",c:"b-teal"},ai:{l:"AI Agents",c:"b-teal"},features:["Parallel dialing (3\u20139 simultaneous)","AI voicemail + answer detection","Prospecting AI agent","Coaching AI agent","Single unified workspace"],cons:["Pricing can be opaque","Newer platform (2023)","Requires clean contact data"],bestFor:"SDR/BDR teams where live connects per hour is the primary metric.",verdict:"Best upgrade from Salesloft if your team lives on the phone. 3x the conversations.",quotes:["\"3x more conversations per hour.\" \u2014 Sales Manager","\"5 years ahead of where Salesloft is.\" \u2014 CRO"]},
-  {id:"outreach",name:"Outreach.io",url:"https://www.outreach.io",pos:"Enterprise sales execution",cost:"$18,000\u2013$36,000+",costCls:"cost-premium",dialer:{l:"Power + Parallel",c:"b-green"},parallel:{l:"Native Parallel",c:"b-green"},social:{l:"Multi-Channel",c:"b-green"},ai:{l:"30+ Agents",c:"b-teal"},features:["Dual power + parallel dialers","Email sequences + templates","Call recording + transcription","Deal intelligence scoring","Deep Salesforce integration"],cons:["Highest cost option","Pre-AI architecture (2014)","2\u20134 week implementation"],bestFor:"Enterprise teams (50+ reps) needing governance and multi-channel orchestration.",verdict:"Most powerful but most expensive. Overkill for lean teams.",quotes:["\"Overkill for teams under 30 reps.\" \u2014 G2 reviewer"]},
-  {id:"revenueio",name:"Revenue.io",url:"https://www.revenue.io",pos:"SFDC-native call coaching",cost:"$12,000\u2013$16,800",costCls:"cost-premium",dialer:{l:"RingDNA Dialer",c:"b-green"},parallel:{l:"Parallel Ready",c:"b-warn"},social:{l:"Email + Calls",c:"b-teal"},ai:{l:"Live Coaching AI",c:"b-teal"},features:["RingDNA power dialer (Salesforce-native)","Real-time AI battlecards during calls","Live call coaching overlays","Full transcription + recording","Advanced call analytics"],cons:["Email sequences are weak","Voice-first not true multi-channel","No native parallel dialing"],bestFor:"Call-heavy teams staying on Salesforce who want real-time AI coaching.",verdict:"Best if reps spend 70%+ of day on the phone and need live coaching.",quotes:["\"Real-time coaching during live calls changed how our reps handle objections.\" \u2014 G2 4.3\u2605"]},
-  {id:"replyio",name:"Reply.io",url:"https://reply.io",pos:"AI multi-channel automation",cost:"$9,600\u2013$14,400",costCls:"cost-moderate",dialer:{l:"Phone Ready",c:"b-warn"},parallel:{l:"Not Native",c:"b-danger"},social:{l:"Email + LinkedIn",c:"b-teal"},ai:{l:"Jason AI SDR",c:"b-teal"},features:["Jason AI writes + sends emails autonomously","Email warmup built-in","LinkedIn automation","Multi-channel sequences","SFDC + HubSpot sync"],cons:["No native dialer (integration only)","Annual contracts required","Phone calling is limited"],bestFor:"Cold email-first teams who want AI to handle sequence writing automatically.",verdict:"Strongest for email-heavy orgs. Combine with Aircall for calling.",quotes:["\"Jason AI saves our reps 2 hours a day on email writing.\" \u2014 G2 3.9\u2605"]},
-  {id:"outplay",name:"Outplay",url:"https://www.outplay.io",pos:"Multi-channel + WhatsApp",cost:"$14,400\u2013$16,800",costCls:"cost-premium",dialer:{l:"Parallel Dialer",c:"b-green"},parallel:{l:"Native Parallel",c:"b-green"},social:{l:"SMS + WhatsApp",c:"b-green"},ai:{l:"Sequence AI",c:"b-teal"},features:["Parallel + power dialing","Email + Phone + LinkedIn + SMS","WhatsApp cadences (unique)","AI sequence suggestions","SFDC sync"],cons:["Complex setup for full feature set","Premium-tier pricing","Smaller customer base"],bestFor:"Global teams or anyone needing WhatsApp in their outreach stack.",verdict:"Only serious platform with native WhatsApp. Worth it for international outbound.",quotes:["\"The only platform with WhatsApp cadences that actually works.\" \u2014 G2 4.0\u2605"]},
-  {id:"mixmax",name:"Mixmax",url:"https://mixmax.com",pos:"Inbox-native engagement",cost:"$6,960\u2013$21,360",costCls:"cost-budget",dialer:{l:"No Dialer",c:"b-danger"},parallel:{l:"No Dialer",c:"b-danger"},social:{l:"Email + Meetings",c:"b-teal"},ai:{l:"AI Email Gen",c:"b-teal"},features:["Lives inside Gmail/Outlook","One-click scheduling","Email tracking + analytics","Automated sequences from inbox","Low friction setup"],cons:["Zero phone/dialing capability","Email-only not true multi-channel","Light reporting"],bestFor:"Email-first teams who want to work entirely from their inbox.",verdict:"Cheapest option. Needs a standalone dialer (Aircall etc.) for calling.",quotes:["\"Never have to leave Gmail.\" \u2014 G2 4.2\u2605"]},
-  {id:"salesloft",name:"Salesloft",url:"https://www.salesloft.com",pos:"Current baseline (incumbent)",cost:"$15,000\u2013$30,000",costCls:"cost-premium",dialer:{l:"Power Dialer",c:"b-green"},parallel:{l:"Sequential Only",c:"b-warn"},social:{l:"Email + LinkedIn",c:"b-teal"},ai:{l:"Weak (Pre-AI)",c:"b-danger"},features:["Mature power dialer","Multi-channel sequences","Activity logging","Salesforce sync","Call recording"],cons:["Built in 2011, pre-AI architecture","Power dialing only no parallel","Losing market share to newer tools","Price-to-value declining"],bestFor:"Staying only if you need zero change management and 6+ months to re-evaluate.",verdict:"The baseline to beat. Most alternatives offer more for less.",quotes:["\"Pre-AI architecture. The bones are solid but it shows its age.\" \u2014 Technical review, 2026"]}
+  {id:"apollo",name:"Apollo.io",url:"https://www.apollo.io",pos:"All-in-one data + outreach",cost:"$11,760\u2013$14,400",costCls:"cost-premium",dialer:{l:"Native Power Dialer",c:"b-green"},parallel:{l:"Power Only",c:"b-warn"},social:{l:"LinkedIn + Email",c:"b-green"},ai:{l:"GPT-4 Writing",c:"b-teal"},cmp:{dialerType:"Power (Sequential)",parallel:"No",sfIntegration:"Native",channels:"Email + LinkedIn",aiLevel:"GPT-4 email writing",implementation:"1\u20132 weeks",ease:"\u2605\u2605\u2605\u2605"},features:["275M+ B2B contacts","Power dialer native","Email sequences","LinkedIn automation","Salesforce sync"],cons:["Data accuracy ~65%","Trustpilot 2.2\u2605 (support issues)","No parallel dialer"],bestFor:"SDR teams wanting bundled data + outreach in one tool.",verdict:"Great starting point. Replace Salesloft AND get a database. Watch data quality.",quotes:["\"Data accuracy ~65%. Good for volume.\" \u2014 Sales Manager, G2","\"Feels dated vs Nooks for pure dialing.\" \u2014 G2 reviewer"]},
+  {id:"groove",name:"Groove (Clari)",url:"https://www.groove.co",pos:"Salesforce-native engagement",cost:"$12,000\u2013$14,400",costCls:"cost-premium",dialer:{l:"Native Dialer",c:"b-green"},parallel:{l:"Flow Dialing",c:"b-warn"},social:{l:"Email + Calls",c:"b-teal"},ai:{l:"Basic",c:"b-muted"},cmp:{dialerType:"Power / Flow (Sequential)",parallel:"No",sfIntegration:"100% Native (zero lag)",channels:"Email + Calls",aiLevel:"Basic",implementation:"1\u20132 weeks",ease:"\u2605\u2605\u2605\u2605\u2605"},features:["100% Salesforce native","Zero data sync lag","Activity auto-logging","Flow (sequential) dialing","Email + calendar focus"],cons:["Basic AI features","No true parallel dialing","Clari dependency adds cost"],bestFor:"Teams deeply embedded in Salesforce who need zero sync friction.",verdict:"Safe, reliable swap if you love Salesforce and hate sync issues.",quotes:["\"Zero lag between Groove and SFDC. It just works.\" \u2014 G2 4.1\u2605"]},
+  {id:"nooks",name:"Nooks.ai",url:"https://www.nooks.ai",pos:"AI parallel dialer + sequences",cost:"$12,000\u2013$20,000",costCls:"cost-premium",dialer:{l:"Parallel Dialer",c:"b-green"},parallel:{l:"Best-in-Class",c:"b-green"},social:{l:"Email + AI",c:"b-teal"},ai:{l:"AI Agents",c:"b-teal"},cmp:{dialerType:"Parallel (3\u20139 simultaneous)",parallel:"Yes \u2014 best-in-class",sfIntegration:"API Sync",channels:"Email + Calls + AI Coaching",aiLevel:"Prospecting + Coaching AI Agents",implementation:"1\u20132 weeks",ease:"\u2605\u2605\u2605\u2605"},features:["Parallel dialing (3\u20139 simultaneous)","AI voicemail + answer detection","Prospecting AI agent","Coaching AI agent","Single unified workspace"],cons:["Pricing can be opaque","Newer platform (2023)","Requires clean contact data"],bestFor:"SDR/BDR teams where live connects per hour is the primary metric.",verdict:"Best upgrade from Salesloft if your team lives on the phone. 3x the conversations.",quotes:["\"3x more conversations per hour.\" \u2014 Sales Manager","\"5 years ahead of where Salesloft is.\" \u2014 CRO"]},
+  {id:"gong",name:"Gong Engage",url:"https://www.gong.io/products/engage",pos:"Conversation AI + Sequences",cost:"$15,000\u2013$25,000",costCls:"cost-premium",dialer:{l:"Native Power Dialer",c:"b-green"},parallel:{l:"Power + AI-Assisted",c:"b-warn"},social:{l:"Email + Calls + LinkedIn",c:"b-green"},ai:{l:"Conversation AI",c:"b-teal"},cmp:{dialerType:"Power + AI-Assisted",parallel:"Limited (not parallel)",sfIntegration:"Native",channels:"Email + Calls + LinkedIn",aiLevel:"Conversation AI + Real-time Coaching",implementation:"2\u20133 weeks",ease:"\u2605\u2605\u2605\u2605"},features:["AI call analysis + real-time coaching","Email + call sequences","Deal intelligence + risk signals","Meeting intelligence native","Consolidates Gong CI + engagement in one platform"],cons:["Best value only if already paying for Gong","Opaque pricing \u2014 requires sales demo","Weaker than Nooks for pure volume dialing","Enterprise-first sales process"],bestFor:"Teams already paying for Gong Conversation Intelligence who want to consolidate into one platform.",verdict:"Strongest consolidation play if Gong is already in the stack. Eliminates a separate tool and a separate invoice.",quotes:["\"Gong Engage replaced Salesloft for us \u2014 we were already paying for Gong anyway.\" \u2014 VP Sales, G2 2025"]},
+  {id:"outreach",name:"Outreach.io",url:"https://www.outreach.io",pos:"Enterprise sales execution",cost:"$18,000\u2013$36,000+",costCls:"cost-premium",dialer:{l:"Power + Parallel",c:"b-green"},parallel:{l:"Native Parallel",c:"b-green"},social:{l:"Multi-Channel",c:"b-green"},ai:{l:"30+ Agents",c:"b-teal"},cmp:{dialerType:"Power + Parallel (both native)",parallel:"Yes \u2014 native parallel",sfIntegration:"Deep Native",channels:"Email + Calls + LinkedIn + SMS",aiLevel:"30+ AI Agents (retrofitted 2025\u201326)",implementation:"2\u20134 weeks",ease:"\u2605\u2605\u2605"},features:["Dual power + parallel dialers","Email sequences + templates","Call recording + transcription","Deal intelligence scoring","Deep Salesforce integration"],cons:["Highest cost option","Pre-AI architecture (2014)","2\u20134 week implementation"],bestFor:"Enterprise teams (50+ reps) needing governance and multi-channel orchestration.",verdict:"Most powerful but most expensive. Overkill for lean teams.",quotes:["\"Overkill for teams under 30 reps.\" \u2014 G2 reviewer"]},
+  {id:"revenueio",name:"Revenue.io",url:"https://www.revenue.io",pos:"SFDC-native call coaching",cost:"$12,000\u2013$16,800",costCls:"cost-premium",dialer:{l:"RingDNA Dialer",c:"b-green"},parallel:{l:"Parallel Ready",c:"b-warn"},social:{l:"Email + Calls",c:"b-teal"},ai:{l:"Live Coaching AI",c:"b-teal"},cmp:{dialerType:"RingDNA Power Dialer",parallel:"Parallel ready (add-on)",sfIntegration:"100% Native",channels:"Email + Calls",aiLevel:"Live Coaching AI (real-time battlecards)",implementation:"1\u20133 weeks",ease:"\u2605\u2605\u2605\u2605"},features:["RingDNA power dialer (Salesforce-native)","Real-time AI battlecards during calls","Live call coaching overlays","Full transcription + recording","Advanced call analytics"],cons:["Email sequences are weak","Voice-first not true multi-channel","No native parallel dialing"],bestFor:"Call-heavy teams staying on Salesforce who want real-time AI coaching.",verdict:"Best if reps spend 70%+ of day on the phone and need live coaching.",quotes:["\"Real-time coaching during live calls changed how our reps handle objections.\" \u2014 G2 4.3\u2605"]},
+  {id:"replyio",name:"Reply.io",url:"https://reply.io",pos:"AI multi-channel automation",cost:"$9,600\u2013$14,400",costCls:"cost-moderate",dialer:{l:"Phone Ready",c:"b-warn"},parallel:{l:"Not Native",c:"b-danger"},social:{l:"Email + LinkedIn",c:"b-teal"},ai:{l:"Jason AI SDR",c:"b-teal"},cmp:{dialerType:"Integration only (Aircall etc.)",parallel:"No",sfIntegration:"API Sync",channels:"Email + LinkedIn",aiLevel:"Jason AI SDR Agent (auto-writes + sends)",implementation:"1\u20132 weeks",ease:"\u2605\u2605\u2605\u2605"},features:["Jason AI writes + sends emails autonomously","Email warmup built-in","LinkedIn automation","Multi-channel sequences","SFDC + HubSpot sync"],cons:["No native dialer (integration only)","Annual contracts required","Phone calling is limited"],bestFor:"Cold email-first teams who want AI to handle sequence writing automatically.",verdict:"Strongest for email-heavy orgs. Combine with Aircall for calling.",quotes:["\"Jason AI saves our reps 2 hours a day on email writing.\" \u2014 G2 3.9\u2605"]},
+  {id:"outplay",name:"Outplay",url:"https://www.outplay.io",pos:"Multi-channel + WhatsApp",cost:"$14,400\u2013$16,800",costCls:"cost-premium",dialer:{l:"Parallel Dialer",c:"b-green"},parallel:{l:"Native Parallel",c:"b-green"},social:{l:"SMS + WhatsApp",c:"b-green"},ai:{l:"Sequence AI",c:"b-teal"},cmp:{dialerType:"Parallel + Power (both native)",parallel:"Yes \u2014 native parallel",sfIntegration:"API Sync",channels:"Email + Calls + LinkedIn + SMS + WhatsApp",aiLevel:"AI Sequence Suggestions",implementation:"2\u20133 weeks",ease:"\u2605\u2605\u2605"},features:["Parallel + power dialing","Email + Phone + LinkedIn + SMS","WhatsApp cadences (unique)","AI sequence suggestions","SFDC sync"],cons:["Complex setup for full feature set","Premium-tier pricing","Smaller customer base"],bestFor:"Global teams or anyone needing WhatsApp in their outreach stack.",verdict:"Only serious platform with native WhatsApp. Worth it for international outbound.",quotes:["\"The only platform with WhatsApp cadences that actually works.\" \u2014 G2 4.0\u2605"]},
+  {id:"mixmax",name:"Mixmax",url:"https://mixmax.com",pos:"Inbox-native engagement",cost:"$6,960\u2013$21,360",costCls:"cost-budget",dialer:{l:"No Dialer",c:"b-danger"},parallel:{l:"No Dialer",c:"b-danger"},social:{l:"Email + Meetings",c:"b-teal"},ai:{l:"AI Email Gen",c:"b-teal"},cmp:{dialerType:"None",parallel:"No",sfIntegration:"API Sync",channels:"Email only (Gmail/Outlook native)",aiLevel:"AI email generation",implementation:"<1 week",ease:"\u2605\u2605\u2605\u2605\u2605"},features:["Lives inside Gmail/Outlook","One-click scheduling","Email tracking + analytics","Automated sequences from inbox","Low friction setup"],cons:["Zero phone/dialing capability","Email-only not true multi-channel","Light reporting"],bestFor:"Email-first teams who want to work entirely from their inbox.",verdict:"Cheapest option. Needs a standalone dialer (Aircall etc.) for calling.",quotes:["\"Never have to leave Gmail.\" \u2014 G2 4.2\u2605"]},
+  {id:"instantly",name:"Instantly.ai",url:"https://instantly.ai",pos:"Budget AI cold email",cost:"$3,000\u2013$7,200",costCls:"cost-budget",dialer:{l:"No Dialer",c:"b-danger"},parallel:{l:"No Dialer",c:"b-danger"},social:{l:"Email Only",c:"b-warn"},ai:{l:"AI Personalization",c:"b-teal"},cmp:{dialerType:"None",parallel:"No",sfIntegration:"Via Zapier / API",channels:"Cold email only",aiLevel:"AI personalization + email warmup at scale",implementation:"<1 week",ease:"\u2605\u2605\u2605\u2605\u2605"},features:["Unlimited email sending accounts","AI personalization at scale","Built-in email warmup","High deliverability focus","Simple sequence builder"],cons:["Email only \u2014 no calling capability","No native Salesforce sync","Not enterprise-grade","Requires separate dialer (Aircall, Nooks)"],bestFor:"Email-first teams running high-volume cold outbound on a tight budget.",verdict:"Cheapest way to replace Salesloft\u2019s email sequences. Needs a dialer alongside it.",quotes:["\"Instantly replaced our $2K/month tool for $300/month. Deliverability is better too.\" \u2014 G2 reviewer 2025"]},
+  {id:"salesloft",name:"Salesloft",url:"https://www.salesloft.com",pos:"Current baseline (incumbent)",cost:"$15,000\u2013$30,000",costCls:"cost-premium",dialer:{l:"Power Dialer",c:"b-green"},parallel:{l:"Sequential Only",c:"b-warn"},social:{l:"Email + LinkedIn",c:"b-teal"},ai:{l:"Weak (Pre-AI)",c:"b-danger"},cmp:{dialerType:"Power Sequential Only",parallel:"No \u2014 add-on required",sfIntegration:"Native",channels:"Email + Calls + LinkedIn",aiLevel:"Pre-AI / Weak (built 2011)",implementation:"Already deployed",ease:"\u2605\u2605\u2605 (already trained)"},features:["Mature power dialer","Multi-channel sequences","Activity logging","Salesforce sync","Call recording"],cons:["Built in 2011, pre-AI architecture","Power dialing only no parallel","Losing market share to newer tools","Price-to-value declining"],bestFor:"Staying only if you need zero change management and 6+ months to re-evaluate.",verdict:"The baseline to beat. Most alternatives offer more for less.",quotes:["\"Pre-AI architecture. The bones are solid but it shows its age.\" \u2014 Technical review, 2026"]}
 ];
 
+// ─── Path B Data ──────────────────────────────────────────────────────────────
 var pathBData=[
-  {id:"pipedrive",name:"Pipedrive",url:"https://www.pipedrive.com",pos:"Visual pipeline CRM",cost:"$6,000\u2013$15,600",costCls:"cost-budget",dialer:{l:"Integration",c:"b-warn"},cadences:{l:"Basic Cadences",c:"b-green"},ai:{l:"Emerging AI",c:"b-muted"},ease:"\u2605\u2605\u2605\u2605\u2605",features:["Visual pipeline drag and drop","80+ integrations","Best-in-class mobile app","Activity reminders","Deal rotting alerts"],cons:["No native dialer need Aircall etc","Limited automation on lower tiers","Basic reporting"],bestFor:"Small teams that want maximum adoption speed and simple pipeline visibility.",verdict:"Fastest to implement (1\u20132 weeks). Best if you want a clean break from complexity.",roi:"Saves $48K\u2013$85K/yr vs. Salesforce + Salesloft.",quotes:["\"Fastest implementation I have ever done. Day 1 adoption was 80%+.\" \u2014 G2 4.5\u2605"]},
-  {id:"hubspot",name:"HubSpot Sales Hub",url:"https://www.hubspot.com/products/sales",pos:"All-in-one growth platform",cost:"$24,000\u2013$36,000",costCls:"cost-premium",dialer:{l:"Add-on Required",c:"b-warn"},cadences:{l:"Strong Cadences",c:"b-green"},ai:{l:"Breeze AI",c:"b-teal"},ease:"\u2605\u2605\u2605\u2605",features:["Unified Sales + Marketing CRM","2,000+ integrations","Free CRM tier to start","Email sequences native","Breeze AI for content + insights"],cons:["30\u201350% price increases at renewal","Dialer is an add-on cost","Support quality declining in 2025\u201326 reviews"],bestFor:"Teams that want Sales + Marketing on one platform with a strong brand.",verdict:"Most complete ecosystem. Watch the renewal pricing \u2014 it creeps up fast.",roi:"Saves $27,600\u2013$68,400/yr depending on tier.",quotes:["\"The renewal pricing trap is real. Budget for 40% increases.\" \u2014 Trustpilot 2025\u201326"]},
-  {id:"zoho",name:"Zoho CRM",url:"https://www.zoho.com/crm",pos:"Feature-rich budget CRM",cost:"$2,400\u2013$9,600",costCls:"cost-budget",dialer:{l:"Native (Basic)",c:"b-green"},cadences:{l:"Native Cadences",c:"b-green"},ai:{l:"Zia AI",c:"b-teal"},ease:"\u2605\u2605\u2605",features:["Deep customization","Native telephony + dialer","Zia AI lead scoring","Zoho ecosystem (30+ apps)","Sequences native"],cons:["Steep learning curve","3\u20134 week setup minimum","UI feels utilitarian"],bestFor:"Technical teams who want Salesforce-level depth at budget pricing.",verdict:"Highest ROI potential. Requires admin investment upfront.",roi:"Saves $54K\u2013$90K/yr \u2014 highest savings of all options.",quotes:["\"Deepest customization available at this price point.\" \u2014 G2 4.2\u2605"]},
-  {id:"freshsales",name:"Freshsales",url:"https://www.freshworks.com/crm/sales",pos:"Easy all-in-one with calling",cost:"$4,800\u2013$12,000",costCls:"cost-budget",dialer:{l:"Native + SMS",c:"b-green"},cadences:{l:"Native Cadences",c:"b-green"},ai:{l:"Freddy AI",c:"b-teal"},ease:"\u2605\u2605\u2605\u2605",features:["Built-in phone + SMS dialer","Freddy AI lead scoring","Visual pipeline","Contextual collab tools","Email + phone sequences"],cons:["Smaller integration ecosystem","Best inside Freshworks suite","Limited marketing automation"],bestFor:"SMBs wanting phone + CRM native in one easy package.",verdict:"Best batteries-included option at budget pricing. Very easy to adopt.",roi:"Saves $51K\u2013$85K/yr vs. current stack.",quotes:["\"Built-in calling + SMS out of the box. Freddy AI actually works.\" \u2014 G2 4.3\u2605"]},
-  {id:"close",name:"Close CRM",url:"https://www.close.com",pos:"Outbound-first CRM",cost:"$6,000\u2013$16,560",costCls:"cost-budget",dialer:{l:"Excellent Native",c:"b-green"},cadences:{l:"Native Cadences",c:"b-green"},ai:{l:"AI Sequences",c:"b-teal"},ease:"\u2605\u2605\u2605\u2605",features:["Native intelligent dialer power + predictive","Phone + Email + SMS native","AI-powered sequence suggestions","Fast implementation (2\u20133 weeks)","Simple rep-first UI"],cons:["Limited complex account management","No contact database included","Less flexible than Salesforce"],bestFor:"High-velocity outbound/SDR teams who want CRM + dialer in one clean tool.",verdict:"Best overall for outbound-heavy teams replacing both tools. Strong dialer + simple CRM.",roi:"Saves $47K\u2013$86,400/yr vs. current stack.",quotes:["\"Excellent for outbound sales. Reps love it \u2014 no training needed.\" \u2014 G2 4.4\u2605"]},
-  {id:"oliv",name:"Oliv.ai",url:"https://www.oliv.ai",pos:"AI-native revenue orchestration",cost:"$19,000\u2013$28,000",costCls:"cost-moderate",dialer:{l:"Integration Only",c:"b-warn"},cadences:{l:"Via AI Agents",c:"b-teal"},ai:{l:"30+ Agents",c:"b-teal"},ease:"\u2605\u2605\u2605\u2605\u2605",features:["Forecaster + Deal Driver agents","CRM Manager agent","Prospector + Coaching agents","Multi-agent orchestration","Replaces Gong + Clari + parts of CRM"],cons:["No native dialer","Newer platform (2023)","Still expanding feature set"],bestFor:"Forward-thinking orgs willing to adopt an AI-first revenue stack.",verdict:"Highest ceiling. Replaces multiple tools. Need a dialer alongside it.",roi:"Saves $276K\u2013$776K/yr by replacing Gong + Clari + parts of CRM.",quotes:["\"30+ agents working autonomously transformed our rev ops.\" \u2014 CRO, 2026"]},
-  {id:"monday",name:"monday.com CRM",url:"https://monday.com/p/crm",pos:"Visual workflow CRM",cost:"$6,720\u2013$13,440",costCls:"cost-budget",dialer:{l:"Integrations Only",c:"b-warn"},cadences:{l:"Visual Cadences",c:"b-teal"},ai:{l:"Lexi AI",c:"b-teal"},ease:"\u2605\u2605\u2605",features:["Customizable board system","Lexi AI agent for lead qualification","Top-tier workflow automation","Collaboration-first design","2,000+ integrations"],cons:["No native dialer","Can feel like project management not sales-native","Gets cluttered at scale"],bestFor:"Teams prioritizing workflow visibility and cross-team collaboration.",verdict:"Good for ops-focused orgs. Add Aircall or Nooks for calling.",roi:"Saves $49K\u2013$85K/yr vs. current stack.",quotes:["\"Lexi AI handles lead qualification without rep input.\" \u2014 monday.com case study"]},
-  {id:"copper",name:"Copper CRM",url:"https://www.copper.com",pos:"Google Workspace CRM",cost:"$6,000\u2013$16,560",costCls:"cost-budget",dialer:{l:"Gmail Native",c:"b-warn"},cadences:{l:"Gmail Sequences",c:"b-teal"},ai:{l:"AI Suggestions",c:"b-muted"},ease:"\u2605\u2605\u2605\u2605 (Gmail)",features:["Only CRM recommended by Google","Zero data entry from Gmail/Calendar","Contact management native","Simple deal tracking","Gmail sequence sending"],cons:["Gmail/Workspace only no Outlook","No native dialer","Limited heavy outbound power"],bestFor:"Teams entirely in Google Workspace who want their CRM to live in Gmail.",verdict:"Best Gmail-native option. Needs Aircall or similar for calling.",roi:"Saves $47K\u2013$83K/yr vs. current stack.",quotes:["\"Best Gmail integration, bar none. CRM feels invisible.\" \u2014 G2 4.6\u2605"]},
-  {id:"streak",name:"Streak CRM",url:"https://www.streak.com",pos:"Lightweight Gmail CRM",cost:"$4,920\u2013$13,680",costCls:"cost-budget",dialer:{l:"No Dialer",c:"b-danger"},cadences:{l:"Gmail Sequences",c:"b-teal"},ai:{l:"AI Compose",c:"b-muted"},ease:"\u2605\u2605\u2605 (Gmail)",features:["100% inside Gmail","Pipeline tracking in inbox","Lightweight + fast setup","AI email composition","Good for tiny teams"],cons:["Gmail-only no Outlook or standalone","Absolutely no dialer","Spreadsheet-like feel not enterprise-ready"],bestFor:"Very small teams (1\u20133 people) who want zero overhead and live in Gmail.",verdict:"Too lightweight for growth trajectory. Consider only as a bridge.",roi:"",quotes:["\"Lightweight and spreadsheet-like. Works for micro-teams.\" \u2014 G2 review"]}
+  {id:"pipedrive",name:"Pipedrive",url:"https://www.pipedrive.com",pos:"Visual pipeline CRM",cost:"$6,000\u2013$15,600",costCls:"cost-budget",dialer:{l:"Integration",c:"b-warn"},cadences:{l:"Basic Cadences",c:"b-green"},ai:{l:"Emerging AI",c:"b-muted"},ease:"\u2605\u2605\u2605\u2605\u2605",cmp:{dialerType:"Integration only (Aircall etc.)",parallel:"No",sfIntegration:"Replaces Salesforce",channels:"Email + Meetings",aiLevel:"Emerging AI (basic)",implementation:"1\u20132 weeks",ease:"\u2605\u2605\u2605\u2605\u2605"},features:["Visual pipeline drag and drop","80+ integrations","Best-in-class mobile app","Activity reminders","Deal rotting alerts"],cons:["No native dialer need Aircall etc","Limited automation on lower tiers","Basic reporting"],bestFor:"Small teams that want maximum adoption speed and simple pipeline visibility.",verdict:"Fastest to implement (1\u20132 weeks). Best if you want a clean break from complexity.",roi:"Saves $48K\u2013$85K/yr vs. Salesforce + Salesloft.",quotes:["\"Fastest implementation I have ever done. Day 1 adoption was 80%+.\" \u2014 G2 4.5\u2605"]},
+  {id:"hubspot",name:"HubSpot Sales Hub",url:"https://www.hubspot.com/products/sales",pos:"All-in-one growth platform",cost:"$24,000\u2013$36,000",costCls:"cost-premium",dialer:{l:"Add-on Required",c:"b-warn"},cadences:{l:"Strong Cadences",c:"b-green"},ai:{l:"Breeze AI",c:"b-teal"},ease:"\u2605\u2605\u2605\u2605",cmp:{dialerType:"Add-on (paid extra)",parallel:"No",sfIntegration:"Replaces Salesforce",channels:"Email + Calls + Social",aiLevel:"Breeze AI (content + insights)",implementation:"2\u20134 weeks",ease:"\u2605\u2605\u2605\u2605"},features:["Unified Sales + Marketing CRM","2,000+ integrations","Free CRM tier to start","Email sequences native","Breeze AI for content + insights"],cons:["30\u201350% price increases at renewal","Dialer is an add-on cost","Support quality declining in 2025\u201326 reviews"],bestFor:"Teams that want Sales + Marketing on one platform with a strong brand.",verdict:"Most complete ecosystem. Watch the renewal pricing \u2014 it creeps up fast.",roi:"Saves $27,600\u2013$68,400/yr depending on tier.",quotes:["\"The renewal pricing trap is real. Budget for 40% increases.\" \u2014 Trustpilot 2025\u201326"]},
+  {id:"zoho",name:"Zoho CRM",url:"https://www.zoho.com/crm",pos:"Feature-rich budget CRM",cost:"$2,400\u2013$9,600",costCls:"cost-budget",dialer:{l:"Native (Basic)",c:"b-green"},cadences:{l:"Native Cadences",c:"b-green"},ai:{l:"Zia AI",c:"b-teal"},ease:"\u2605\u2605\u2605",cmp:{dialerType:"Native basic telephony",parallel:"No",sfIntegration:"Replaces Salesforce",channels:"Email + Calls + SMS",aiLevel:"Zia AI (lead scoring + suggestions)",implementation:"3\u20134 weeks",ease:"\u2605\u2605\u2605"},features:["Deep customization","Native telephony + dialer","Zia AI lead scoring","Zoho ecosystem (30+ apps)","Sequences native"],cons:["Steep learning curve","3\u20134 week setup minimum","UI feels utilitarian"],bestFor:"Technical teams who want Salesforce-level depth at budget pricing.",verdict:"Highest ROI potential. Requires admin investment upfront.",roi:"Saves $54K\u2013$90K/yr \u2014 highest savings of all options.",quotes:["\"Deepest customization available at this price point.\" \u2014 G2 4.2\u2605"]},
+  {id:"freshsales",name:"Freshsales",url:"https://www.freshworks.com/crm/sales",pos:"Easy all-in-one with calling",cost:"$4,800\u2013$12,000",costCls:"cost-budget",dialer:{l:"Native + SMS",c:"b-green"},cadences:{l:"Native Cadences",c:"b-green"},ai:{l:"Freddy AI",c:"b-teal"},ease:"\u2605\u2605\u2605\u2605",cmp:{dialerType:"Native phone + SMS",parallel:"No",sfIntegration:"Replaces Salesforce",channels:"Email + Calls + SMS",aiLevel:"Freddy AI (lead scoring + suggestions)",implementation:"1\u20133 weeks",ease:"\u2605\u2605\u2605\u2605"},features:["Built-in phone + SMS dialer","Freddy AI lead scoring","Visual pipeline","Contextual collab tools","Email + phone sequences"],cons:["Smaller integration ecosystem","Best inside Freshworks suite","Limited marketing automation"],bestFor:"SMBs wanting phone + CRM native in one easy package.",verdict:"Best batteries-included option at budget pricing. Very easy to adopt.",roi:"Saves $51K\u2013$85K/yr vs. current stack.",quotes:["\"Built-in calling + SMS out of the box. Freddy AI actually works.\" \u2014 G2 4.3\u2605"]},
+  {id:"close",name:"Close CRM",url:"https://www.close.com",pos:"Outbound-first CRM",cost:"$6,000\u2013$16,560",costCls:"cost-budget",dialer:{l:"Excellent Native",c:"b-green"},cadences:{l:"Native Cadences",c:"b-green"},ai:{l:"AI Sequences",c:"b-teal"},ease:"\u2605\u2605\u2605\u2605",cmp:{dialerType:"Power + Predictive (native)",parallel:"Predictive (limited)",sfIntegration:"Replaces Salesforce",channels:"Email + Calls + SMS",aiLevel:"AI sequence suggestions",implementation:"2\u20133 weeks",ease:"\u2605\u2605\u2605\u2605"},features:["Native intelligent dialer power + predictive","Phone + Email + SMS native","AI-powered sequence suggestions","Fast implementation (2\u20133 weeks)","Simple rep-first UI"],cons:["Limited complex account management","No contact database included","Less flexible than Salesforce"],bestFor:"High-velocity outbound/SDR teams who want CRM + dialer in one clean tool.",verdict:"Best overall for outbound-heavy teams replacing both tools. Strong dialer + simple CRM.",roi:"Saves $47K\u2013$86,400/yr vs. current stack.",quotes:["\"Excellent for outbound sales. Reps love it \u2014 no training needed.\" \u2014 G2 4.4\u2605"]},
+  {id:"oliv",name:"Oliv.ai",url:"https://www.oliv.ai",pos:"AI-native revenue orchestration",cost:"$19,000\u2013$28,000",costCls:"cost-moderate",dialer:{l:"Integration Only",c:"b-warn"},cadences:{l:"Via AI Agents",c:"b-teal"},ai:{l:"30+ Agents",c:"b-teal"},ease:"\u2605\u2605\u2605\u2605\u2605",cmp:{dialerType:"Integration only",parallel:"No",sfIntegration:"Replaces + integrates",channels:"Via AI Agents",aiLevel:"30+ Autonomous Agents (Forecaster, Deal Driver, CRM Manager, Prospector, Coach)",implementation:"48 hours",ease:"\u2605\u2605\u2605\u2605\u2605"},features:["Forecaster + Deal Driver agents","CRM Manager agent","Prospector + Coaching agents","Multi-agent orchestration","Replaces Gong + Clari + parts of CRM"],cons:["No native dialer","Newer platform (2023)","Still expanding feature set"],bestFor:"Forward-thinking orgs willing to adopt an AI-first revenue stack.",verdict:"Highest ceiling. Replaces multiple tools. Need a dialer alongside it.",roi:"Saves $276K\u2013$776K/yr by replacing Gong + Clari + parts of CRM.",quotes:["\"30+ agents working autonomously transformed our rev ops.\" \u2014 CRO, 2026"]},
+  {id:"monday",name:"monday.com CRM",url:"https://monday.com/p/crm",pos:"Visual workflow CRM",cost:"$6,720\u2013$13,440",costCls:"cost-budget",dialer:{l:"Integrations Only",c:"b-warn"},cadences:{l:"Visual Cadences",c:"b-teal"},ai:{l:"Lexi AI",c:"b-teal"},ease:"\u2605\u2605\u2605",cmp:{dialerType:"Integration only",parallel:"No",sfIntegration:"Replaces Salesforce",channels:"Email + Workflow automations",aiLevel:"Lexi AI Agent (lead qualification)",implementation:"1\u20132 weeks",ease:"\u2605\u2605\u2605"},features:["Customizable board system","Lexi AI agent for lead qualification","Top-tier workflow automation","Collaboration-first design","2,000+ integrations"],cons:["No native dialer","Can feel like project management not sales-native","Gets cluttered at scale"],bestFor:"Teams prioritizing workflow visibility and cross-team collaboration.",verdict:"Good for ops-focused orgs. Add Aircall or Nooks for calling.",roi:"Saves $49K\u2013$85K/yr vs. current stack.",quotes:["\"Lexi AI handles lead qualification without rep input.\" \u2014 monday.com case study"]},
+  {id:"copper",name:"Copper CRM",url:"https://www.copper.com",pos:"Google Workspace CRM",cost:"$6,000\u2013$16,560",costCls:"cost-budget",dialer:{l:"Gmail Native",c:"b-warn"},cadences:{l:"Gmail Sequences",c:"b-teal"},ai:{l:"AI Suggestions",c:"b-muted"},ease:"\u2605\u2605\u2605\u2605",cmp:{dialerType:"Gmail native click-to-call",parallel:"No",sfIntegration:"Replaces Salesforce",channels:"Gmail + Calendar",aiLevel:"Basic AI suggestions",implementation:"<1 week",ease:"\u2605\u2605\u2605\u2605 (Gmail users)"},features:["Only CRM recommended by Google","Zero data entry from Gmail/Calendar","Contact management native","Simple deal tracking","Gmail sequence sending"],cons:["Gmail/Workspace only no Outlook","No native dialer","Limited heavy outbound power"],bestFor:"Teams entirely in Google Workspace who want their CRM to live in Gmail.",verdict:"Best Gmail-native option. Needs Aircall or similar for calling.",roi:"Saves $47K\u2013$83K/yr vs. current stack.",quotes:["\"Best Gmail integration, bar none. CRM feels invisible.\" \u2014 G2 4.6\u2605"]},
+  {id:"streak",name:"Streak CRM",url:"https://www.streak.com",pos:"Lightweight Gmail CRM",cost:"$4,920\u2013$13,680",costCls:"cost-budget",dialer:{l:"No Dialer",c:"b-danger"},cadences:{l:"Gmail Sequences",c:"b-teal"},ai:{l:"AI Compose",c:"b-muted"},ease:"\u2605\u2605\u2605",cmp:{dialerType:"None",parallel:"No",sfIntegration:"Replaces Salesforce",channels:"Gmail only",aiLevel:"AI Compose (email writing)",implementation:"<1 week",ease:"\u2605\u2605\u2605"},features:["100% inside Gmail","Pipeline tracking in inbox","Lightweight + fast setup","AI email composition","Good for tiny teams"],cons:["Gmail-only no Outlook or standalone","Absolutely no dialer","Spreadsheet-like feel not enterprise-ready"],bestFor:"Very small teams (1\u20133 people) who want zero overhead and live in Gmail.",verdict:"Too lightweight for growth trajectory. Consider only as a bridge.",roi:"",quotes:["\"Lightweight and spreadsheet-like. Works for micro-teams.\" \u2014 G2 review"]},
+  {id:"attio",name:"Attio",url:"https://attio.com",pos:"Modern flexible CRM",cost:"$8,400\u2013$16,800",costCls:"cost-budget",dialer:{l:"Click-to-Call Only",c:"b-warn"},cadences:{l:"Basic Sequences",c:"b-teal"},ai:{l:"AI Enrichment",c:"b-teal"},ease:"\u2605\u2605\u2605\u2605",cmp:{dialerType:"Click-to-call via integration",parallel:"No",sfIntegration:"Replaces Salesforce",channels:"Email + integrations",aiLevel:"AI data enrichment + workflows",implementation:"1\u20132 weeks",ease:"\u2605\u2605\u2605\u2605"},features:["Fully flexible data model","Real-time contact enrichment","GitHub + Slack integrations","Strong API + automation","Modern collaborative workspace"],cons:["No native dialer","Sequences are basic vs. dedicated tools","Better for PLG than outbound-heavy"],bestFor:"Technical founding teams or product-led orgs that want a CRM that bends to their workflow.",verdict:"Best modern CRM for technical teams. Not built for high-volume outbound \u2014 pair with Nooks or Apollo.",roi:"Saves $52K\u2013$88K/yr vs. current stack.",quotes:["\"Finally a CRM that works like software, not a database from 2010.\" \u2014 G2 4.7\u2605"]}
 ];
 
+// ─── Current Stack Baseline (always column 1 in comparison) ──────────────────
+var baseline={
+  name:"Current Stack",pos:"Salesloft + Salesforce",
+  cost:"$75,000\u2013$120,000",
+  cmp:{
+    dialerType:"Power Sequential Only",
+    parallel:"No \u2014 add-on required",
+    sfIntegration:"Native (IS Salesforce)",
+    channels:"Email + Calls + LinkedIn",
+    aiLevel:"Pre-AI / Weak (2011 & 2014 architectures)",
+    implementation:"Already deployed",
+    ease:"\u2605\u2605\u2605 (already trained)"
+  },
+  bestFor:"Status quo \u2014 zero disruption, zero change management.",
+  verdict:"High cost baseline. AI capabilities falling behind every AI-native competitor on this list. Parallel dialing requires expensive add-ons that don\u2019t exist on this architecture."
+};
+
+// ─── Render Tables ────────────────────────────────────────────────────────────
 function renderPathA(){
   var t=document.getElementById("tA"),h="";
   pathAData.forEach(function(p){
-    h+="<tr><td><div class='platform-cell'><a href='"+p.url+"' target='_blank' class='platform-name'>"+p.name+"</a><span class='platform-pos'>"+p.pos+"</span></div></td>"+
-    "<td><span class='badge "+p.costCls+"'>"+p.cost+"</span></td>"+
-    "<td><span class='badge "+p.dialer.c+"'>"+p.dialer.l+"</span></td>"+
-    "<td><span class='badge "+p.parallel.c+"'>"+p.parallel.l+"</span></td>"+
-    "<td><span class='badge "+p.social.c+"'>"+p.social.l+"</span></td>"+
-    "<td><span class='badge "+p.ai.c+"'>"+p.ai.l+"</span></td>"+
-    "<td><button class='view-btn' onclick=\"openPanel('A','"+p.id+"')\">View &rarr;</button></td></tr>";
+    h+="<tr id='row-A-"+p.id+"'>"+
+      "<td class='chk-td'><input type='checkbox' class='platform-check' id='chk-A-"+p.id+"' onchange=\"toggleCompare('A','"+p.id+"',this)\"></td>"+
+      "<td><div class='platform-cell'><a href='"+p.url+"' target='_blank' rel='noopener noreferrer' class='platform-name'>"+p.name+"</a><span class='platform-pos'>"+p.pos+"</span></div></td>"+
+      "<td><span class='badge "+p.costCls+"'>"+p.cost+"</span></td>"+
+      "<td><span class='badge "+p.dialer.c+"'>"+p.dialer.l+"</span></td>"+
+      "<td><span class='badge "+p.parallel.c+"'>"+p.parallel.l+"</span></td>"+
+      "<td><span class='badge "+p.social.c+"'>"+p.social.l+"</span></td>"+
+      "<td><span class='badge "+p.ai.c+"'>"+p.ai.l+"</span></td>"+
+      "<td><button class='view-btn' onclick=\"openPanel('A','"+p.id+"')\">View &rarr;</button></td></tr>";
   });
   t.innerHTML=h;
 }
@@ -400,23 +527,26 @@ function renderPathA(){
 function renderPathB(){
   var t=document.getElementById("tB"),h="";
   pathBData.forEach(function(p){
-    h+="<tr><td><div class='platform-cell'><a href='"+p.url+"' target='_blank' class='platform-name'>"+p.name+"</a><span class='platform-pos'>"+p.pos+"</span></div></td>"+
-    "<td><span class='badge "+p.costCls+"'>"+p.cost+"</span></td>"+
-    "<td><span class='badge "+p.dialer.c+"'>"+p.dialer.l+"</span></td>"+
-    "<td><span class='badge "+p.cadences.c+"'>"+p.cadences.l+"</span></td>"+
-    "<td><span class='badge "+p.ai.c+"'>"+p.ai.l+"</span></td>"+
-    "<td class='stars'>"+p.ease+"</td>"+
-    "<td><button class='view-btn' onclick=\"openPanel('B','"+p.id+"')\">View &rarr;</button></td></tr>";
+    h+="<tr id='row-B-"+p.id+"'>"+
+      "<td class='chk-td'><input type='checkbox' class='platform-check' id='chk-B-"+p.id+"' onchange=\"toggleCompare('B','"+p.id+"',this)\"></td>"+
+      "<td><div class='platform-cell'><a href='"+p.url+"' target='_blank' rel='noopener noreferrer' class='platform-name'>"+p.name+"</a><span class='platform-pos'>"+p.pos+"</span></div></td>"+
+      "<td><span class='badge "+p.costCls+"'>"+p.cost+"</span></td>"+
+      "<td><span class='badge "+p.dialer.c+"'>"+p.dialer.l+"</span></td>"+
+      "<td><span class='badge "+p.cadences.c+"'>"+p.cadences.l+"</span></td>"+
+      "<td><span class='badge "+p.ai.c+"'>"+p.ai.l+"</span></td>"+
+      "<td class='stars'>"+p.ease+"</td>"+
+      "<td><button class='view-btn' onclick=\"openPanel('B','"+p.id+"')\">View &rarr;</button></td></tr>";
   });
   t.innerHTML=h;
 }
 
+// ─── Detail Panel ─────────────────────────────────────────────────────────────
 function openPanel(path,id){
   var list=path==="A"?pathAData:pathBData,p=null;
   for(var i=0;i<list.length;i++){if(list[i].id===id){p=list[i];break;}}
   if(!p)return;
   var roi=p.roi?"<div class='dp-section'><span class='dp-section-label'>Year 1 ROI Estimate</span><div class='dp-cost'>"+p.roi+"</div></div>":"";
-  var html="<a href='"+p.url+"' target='_blank' class='dp-visit'>Visit "+p.name+" &rarr;</a>"+
+  var html="<a href='"+p.url+"' target='_blank' rel='noopener noreferrer' class='dp-visit'>Visit "+p.name+" &rarr;</a>"+
     "<div class='dp-name'>"+p.name+"</div>"+
     "<div class='dp-tagline'>"+p.pos+"</div>"+
     "<div class='dp-chips'><span class='badge "+p.costCls+"'>"+p.cost+"/yr (20 users)</span> <span class='badge "+p.dialer.c+"'>"+p.dialer.l+"</span> <span class='badge "+p.ai.c+"'>"+p.ai.l+"</span></div>"+
@@ -436,6 +566,7 @@ function closePanel(){
   document.getElementById("overlay").classList.remove("show");
 }
 
+// ─── Tab Switching ────────────────────────────────────────────────────────────
 function switchTab(id,btn){
   document.querySelectorAll(".tab-content").forEach(function(el){el.classList.remove("active");});
   document.querySelectorAll(".tab-btn").forEach(function(el){el.classList.remove("active");});
@@ -443,7 +574,149 @@ function switchTab(id,btn){
   btn.classList.add("active");
 }
 
-document.addEventListener("keydown",function(e){if(e.key==="Escape")closePanel();});
+// ─── Compare Feature ──────────────────────────────────────────────────────────
+var selectedPlatforms={};
+
+function toggleCompare(path,id,checkbox){
+  var key=path+"-"+id;
+  var list=path==="A"?pathAData:pathBData;
+  var p=null;
+  for(var i=0;i<list.length;i++){if(list[i].id===id){p=list[i];break;}}
+  if(!p)return;
+  if(checkbox.checked){
+    if(Object.keys(selectedPlatforms).length>=4){
+      checkbox.checked=false;
+      var label=document.querySelector(".compare-bar-label");
+      var origColor=label.style.color;
+      label.style.color="var(--danger)";
+      label.textContent="Max 4 selections";
+      setTimeout(function(){label.style.color=origColor;updateCompareBar();},1800);
+      return;
+    }
+    selectedPlatforms[key]={path:path,platform:p};
+    document.getElementById("row-"+key).classList.add("row-selected");
+  } else {
+    delete selectedPlatforms[key];
+    document.getElementById("row-"+key).classList.remove("row-selected");
+  }
+  updateCompareBar();
+}
+
+function updateCompareBar(){
+  var keys=Object.keys(selectedPlatforms);
+  var bar=document.getElementById("compareBar");
+  var countEl=document.getElementById("compareCount");
+  var chipsEl=document.getElementById("compareChips");
+  if(keys.length===0){bar.classList.remove("visible");return;}
+  bar.classList.add("visible");
+  countEl.textContent=keys.length;
+  var chips="";
+  keys.forEach(function(k){
+    var name=selectedPlatforms[k].platform.name;
+    var pid=selectedPlatforms[k].platform.id;
+    var ppath=selectedPlatforms[k].path;
+    chips+="<span class='compare-chip'>"+name+
+      "<button class='compare-chip-remove' onclick=\"removeFromCompare('"+ppath+"','"+pid+"')\">&times;</button>"+
+      "</span>";
+  });
+  chipsEl.innerHTML=chips;
+}
+
+function removeFromCompare(path,id){
+  var key=path+"-"+id;
+  delete selectedPlatforms[key];
+  var chk=document.getElementById("chk-"+key);
+  var row=document.getElementById("row-"+key);
+  if(chk)chk.checked=false;
+  if(row)row.classList.remove("row-selected");
+  updateCompareBar();
+}
+
+function clearCompare(){
+  Object.keys(selectedPlatforms).forEach(function(k){
+    var chk=document.getElementById("chk-"+k);
+    var row=document.getElementById("row-"+k);
+    if(chk)chk.checked=false;
+    if(row)row.classList.remove("row-selected");
+  });
+  selectedPlatforms={};
+  updateCompareBar();
+}
+
+function openComparison(){
+  var keys=Object.keys(selectedPlatforms);
+  if(keys.length===0)return;
+  var platforms=[];
+  keys.forEach(function(k){platforms.push(selectedPlatforms[k].platform);});
+
+  var rows=[
+    {label:"Annual Cost<br>(20 users)",fn:function(p,isBase){
+      var v=isBase?baseline.cost:p.cost;
+      return "<span class='cmp-val "+(isBase?"bad":"good")+"'>"+v+"/yr</span>";
+    }},
+    {label:"Dialer Type",fn:function(p,isBase){
+      return "<span class='cmp-val'>"+(isBase?baseline.cmp.dialerType:p.cmp.dialerType)+"</span>";
+    }},
+    {label:"Parallel Dialing",fn:function(p,isBase){
+      var v=isBase?baseline.cmp.parallel:p.cmp.parallel;
+      var cls=(v==="No"||v.indexOf("No ")===0)?"warn":(v.indexOf("Yes")===0||v.indexOf("Best")===0)?"good":"";
+      return "<span class='cmp-val "+cls+"'>"+v+"</span>";
+    }},
+    {label:"Outreach Channels",fn:function(p,isBase){
+      return "<span class='cmp-val'>"+(isBase?baseline.cmp.channels:p.cmp.channels)+"</span>";
+    }},
+    {label:"AI Capabilities",fn:function(p,isBase){
+      return "<span class='cmp-val "+(isBase?"bad":"")+"'>"+(isBase?baseline.cmp.aiLevel:p.cmp.aiLevel)+"</span>";
+    }},
+    {label:"Salesforce<br>Integration",fn:function(p,isBase){
+      return "<span class='cmp-val'>"+(isBase?baseline.cmp.sfIntegration:p.cmp.sfIntegration)+"</span>";
+    }},
+    {label:"Implementation",fn:function(p,isBase){
+      return "<span class='cmp-val'>"+(isBase?baseline.cmp.implementation:p.cmp.implementation)+"</span>";
+    }},
+    {label:"Ease of Adoption",fn:function(p,isBase){
+      return "<span class='cmp-val' style='color:var(--green);'>"+(isBase?baseline.cmp.ease:p.cmp.ease)+"</span>";
+    }},
+    {label:"Best For",fn:function(p,isBase){
+      return "<span class='cmp-bestfor'>"+(isBase?baseline.bestFor:p.bestFor)+"</span>";
+    }},
+    {label:"Verdict",fn:function(p,isBase){
+      return "<span class='cmp-verdict'>"+(isBase?baseline.verdict:p.verdict)+"</span>";
+    }}
+  ];
+
+  var thead="<tr><th></th><th class='col-baseline'>"+
+    "<div class='cmp-th-name'>"+baseline.name+"</div>"+
+    "<div class='cmp-th-sub'>"+baseline.pos+"</div>"+
+    "<div class='cmp-th-cost bad'>"+baseline.cost+"/yr</div></th>";
+  platforms.forEach(function(p){
+    thead+="<th class='col-platform'>"+
+      "<div class='cmp-th-name'>"+p.name+"</div>"+
+      "<div class='cmp-th-sub'>"+p.pos+"</div>"+
+      "<div class='cmp-th-cost good'>"+p.cost+"/yr</div></th>";
+  });
+  thead+="</tr>";
+
+  var tbody="";
+  rows.forEach(function(row){
+    tbody+="<tr><td>"+row.label+"</td><td>"+row.fn(null,true)+"</td>";
+    platforms.forEach(function(p){tbody+="<td>"+row.fn(p,false)+"</td>";});
+    tbody+="</tr>";
+  });
+
+  document.getElementById("cmpTable").innerHTML="<thead>"+thead+"</thead><tbody>"+tbody+"</tbody>";
+  document.getElementById("cmpModal").classList.add("show");
+  document.getElementById("cmpOverlay").classList.add("show");
+}
+
+function closeComparison(){
+  document.getElementById("cmpModal").classList.remove("show");
+  document.getElementById("cmpOverlay").classList.remove("show");
+}
+
+document.addEventListener("keydown",function(e){
+  if(e.key==="Escape"){closePanel();closeComparison();}
+});
 
 renderPathA();
 renderPathB();
